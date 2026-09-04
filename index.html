@@ -1573,13 +1573,14 @@ function textToDocxBytes(text) {
 }
 
 async function buildRedactedFile(originalFile, redactedText, format, originalWb, sid, entities, docxBuf) {
+  const safeName = safeFilename(originalFile.name, sid);
+
   if (format === 'docx' && docxBuf && typeof PizZip !== 'undefined') {
     const bytes = redactDocxBuffer(docxBuf, entities || []);
-    return { bytes, filename: addSuffix(originalFile.name, 'redacted'), mime: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' };
+    return { bytes, filename: addSuffix(safeName, 'redacted'), mime: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' };
   }
 
   if (format === 'xlsx' && originalWb) {
-    // Cell-level redaction preserving structure
     const wb = originalWb;
     for (const sheetName of wb.SheetNames) {
       const ws = wb.Sheets[sheetName];
@@ -1594,22 +1595,22 @@ async function buildRedactedFile(originalFile, redactedText, format, originalWb,
       }
     }
     const out = XLSX.write(wb, { type: 'array', bookType: 'xlsx' });
-    return { bytes: new Uint8Array(out), filename: addSuffix(originalFile.name, 'redacted'), mime: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' };
+    return { bytes: new Uint8Array(out), filename: addSuffix(safeName, 'redacted'), mime: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' };
   }
 
-  // PDF → visual redaction with pdf-lib (preserves layout), or DOCX/TXT fallback
+  // PDF → rasterized secure redaction, or DOCX/TXT fallback
   if (format === 'pdf') {
-    const baseName = originalFile.name.replace(/\.pdf$/i, '');
+    const safeBase = safeName.replace(/\.pdf$/i, '');
     if (typeof PDFLib !== 'undefined' && docxBuf) {
       const bytes = await buildRedactedPDF(docxBuf);
-      return { bytes, filename: addSuffix(originalFile.name, 'redacted'), mime: 'application/pdf' };
+      return { bytes, filename: addSuffix(safeName, 'redacted'), mime: 'application/pdf' };
     }
     if (typeof PizZip !== 'undefined') {
       const bytes = textToDocxBytes(redactedText);
-      return { bytes, filename: addSuffix(baseName + '.docx', 'redacted'), mime: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' };
+      return { bytes, filename: addSuffix(safeBase + '.docx', 'redacted'), mime: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' };
     }
     const bytes = new TextEncoder().encode(redactedText);
-    return { bytes, filename: addSuffix(baseName + '.txt', 'redacted'), mime: 'text/plain' };
+    return { bytes, filename: addSuffix(safeBase + '.txt', 'redacted'), mime: 'text/plain' };
   }
 
   // All others → preserve original format and extension
@@ -1617,7 +1618,7 @@ async function buildRedactedFile(originalFile, redactedText, format, originalWb,
   const mimeMap = { csv:'text/csv', tsv:'text/tab-separated-values', md:'text/markdown', txt:'text/plain', log:'text/plain', json:'application/json', xml:'application/xml', html:'text/html', htm:'text/html' };
   const mime = mimeMap[origExt] || 'text/plain';
   const bytes = new TextEncoder().encode(redactedText);
-  return { bytes, filename: addSuffix(originalFile.name, 'redacted'), mime };
+  return { bytes, filename: addSuffix(safeName, 'redacted'), mime };
 }
 
 
@@ -1901,6 +1902,35 @@ function addSuffix(filename, suffix) {
   return dot > 0 ? filename.slice(0, dot) + '_' + suffix + filename.slice(dot) : filename + '_' + suffix;
 }
 
+// Redact PII found in a filename, replacing underscores/hyphens with spaces for detection
+function maskFilename(name) {
+  const dot    = name.lastIndexOf('.');
+  const ext    = dot > 0 ? name.slice(dot) : '';
+  const base   = dot > 0 ? name.slice(0, dot) : name;
+  const spaced = base.replace(/[_\-]+/g, ' ').trim();
+  const spans  = mergeSpans(detectSpans(spaced));
+  if (!spans.length) return name;
+  let masked = '', pos = 0;
+  for (const s of spans) {
+    masked += spaced.slice(pos, s.start) + `[${s.type}]`;
+    pos = s.end;
+  }
+  masked += spaced.slice(pos);
+  return masked.replace(/\s+/g, '_').replace(/^_+|_+$/g, '') + ext;
+}
+
+// Same as maskFilename but uses the active session tokens for consistency with document content
+function safeFilename(name, sid) {
+  const dot    = name.lastIndexOf('.');
+  const ext    = dot > 0 ? name.slice(dot) : '';
+  const base   = dot > 0 ? name.slice(0, dot) : name;
+  const spaced = base.replace(/[_\-]+/g, ' ').trim();
+  const spans  = mergeSpans(detectSpans(spaced));
+  if (!spans.length) return name;
+  const { text } = applyRedactions(spaced, spans, sid);
+  return text.replace(/\s+/g, '_').replace(/^_+|_+$/g, '') + ext;
+}
+
 
 // ══════════════════════════════════════════════════════
 // FILE DRAG & DROP
@@ -1919,7 +1949,7 @@ function fileSelected(input, mode) { if (input.files[0]) setFile(input.files[0],
 function setFile(f, mode) {
   S.files[mode] = f;
   if (mode === 'redact') {
-    el('fileNameR').textContent = f.name;
+    el('fileNameR').textContent = maskFilename(f.name);
     el('fileRowR').classList.remove('hidden');
   }
 }
