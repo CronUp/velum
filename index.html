@@ -1,10 +1,33 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VELUM Lite · Redacción privada para IA</title>
 <meta name="description" content="Redacta datos sensibles antes de enviar a un LLM. 100% en tu navegador, ningún dato sale de tu equipo.">
+
+
+<meta property="og:type"         content="website">
+<meta property="og:site_name"    content="VELUM by CronUp Ciberseguridad">
+<meta property="og:url"          content="https://cronup.github.io/velum/">
+<meta property="og:title"        content="VELUM Lite · Redacción privada para IA">
+<meta property="og:description"  content="Redacta IPs, dominios, emails y datos sensibles antes de compartir con un LLM. Procesamiento 100% local — ningún dato sale de tu equipo.">
+<meta property="og:image"        content="https://cronup.github.io/velum/velum.png">
+<meta property="og:image:type"   content="image/png">
+<meta property="og:image:width"  content="1532">
+<meta property="og:image:height" content="430">
+<meta property="og:image:alt"    content="VELUM Lite — Redacción privada de datos sensibles para IA">
+<meta property="og:locale"       content="es_CL">
+
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:url"         content="https://cronup.github.io/velum/">
+<meta name="twitter:title"       content="VELUM Lite · Redacción privada para IA">
+<meta name="twitter:description" content="Redacta IPs, dominios, emails y datos sensibles antes de compartir con un LLM. Procesamiento 100% local — ningún dato sale de tu equipo.">
+<meta name="twitter:image"       content="https://cronup.github.io/velum/velum.png">
+<meta name="twitter:image:alt"   content="VELUM Lite — Redacción privada de datos sensibles para IA">
+
+<link rel="canonical" href="https://cronup.github.io/velum/">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -313,10 +336,6 @@ body{padding-bottom:34px}
 <!-- ── CronUp footer ── -->
 <div class="cronup-bar">
   <a href="https://www.cronup.com" target="_blank" rel="noopener" class="cronup-link">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex-shrink:0">
-      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.8"/>
-      <path d="M12 6v6l4 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    </svg>
     Intel by CronUp Ciberseguridad
   </a>
   <span class="cronup-sep">·</span>
@@ -1326,7 +1345,7 @@ async function extractText(file) {
     // Collapse runs of 3+ blank lines to 2
     const finalText = deduped.join('\n').replace(/\n{3,}/g, '\n\n').trim();
 
-    return { text: finalText, format: 'pdf', buf, warning: 'PDF redactado visualmente · formato original preservado.' };
+    return { text: finalText, format: 'pdf', buf, warning: 'PDF rasterizado — el texto redactado es eliminado por completo del archivo.' };
   }
 
   if (ext === 'docx') {
@@ -1427,60 +1446,87 @@ function redactDocxBuffer(buf, entities) {
 
 // ───────────────────────────────────────────────────────────────────────────
 
-// Visual PDF redaction: draw black boxes over detected PII using pdf-lib + PDF.js positions
+// Secure PDF redaction: rasterise each page to canvas → draw black boxes over PII → image-only PDF
+// The output contains zero extractable text — all content is burned into JPEG pixels.
 async function buildRedactedPDF(origBuf) {
-  const { PDFDocument, rgb } = PDFLib;
+  const { PDFDocument } = PDFLib;
   pdfjsLib.GlobalWorkerOptions.workerSrc =
     'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-  const pdfjsDoc = await pdfjsLib.getDocument({ data: origBuf.slice(0) }).promise;  // copia independiente para el worker
-  const pdfDoc   = await PDFDocument.load(origBuf);
-  const pdfPages = pdfDoc.getPages();
+  const pdfjsDoc = await pdfjsLib.getDocument({ data: origBuf.slice(0) }).promise;
+  const pdfDoc   = await PDFDocument.create();  // blank PDF — no text layer
+
+  const canvas = document.createElement('canvas');
+  const ctx    = canvas.getContext('2d');
+  const SCALE  = 1.8;  // ~130 DPI — good quality, reasonable speed
+
+  function applyVT(vt, x, y) {
+    return [vt[0] * x + vt[2] * y + vt[4], vt[1] * x + vt[3] * y + vt[5]];
+  }
 
   for (let pi = 0; pi < pdfjsDoc.numPages; pi++) {
     const pdfjsPage = await pdfjsDoc.getPage(pi + 1);
-    const tc        = await pdfjsPage.getTextContent({ normalizeWhitespace: false });
-    const items     = tc.items.filter(it => it.str && it.str.trim());
-    if (!items.length) continue;
+    const viewport  = pdfjsPage.getViewport({ scale: SCALE });
 
-    const pdfLibPage = pdfPages[pi];
+    canvas.width  = Math.ceil(viewport.width);
+    canvas.height = Math.ceil(viewport.height);
 
-    // Rebuild page text and record the character-offset range for each item
-    let pageText = '';
-    const itemMeta = [];
-    for (let j = 0; j < items.length; j++) {
-      const cur = items[j];
-      let prefix = '';
-      if (j > 0) {
-        const prev     = items[j - 1];
-        const fontSize = Math.abs(cur.transform[3]) || 10;
-        const gap      = cur.transform[4] - (prev.transform[4] + (prev.width || 0));
-        const lineDiff = Math.abs(cur.transform[5] - prev.transform[5]);
-        if (lineDiff > fontSize * 0.5)      prefix = '\n';
-        else if (gap > fontSize * 0.15)     prefix = ' ';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    await pdfjsPage.render({ canvasContext: ctx, viewport }).promise;
+
+    const tc    = await pdfjsPage.getTextContent({ normalizeWhitespace: false });
+    const items = tc.items.filter(it => it.str && it.str.trim());
+
+    if (items.length) {
+      let pageText = '';
+      const itemMeta = [];
+      for (let j = 0; j < items.length; j++) {
+        const cur = items[j];
+        let prefix = '';
+        if (j > 0) {
+          const prev     = items[j - 1];
+          const fontSize = Math.abs(cur.transform[3]) || 10;
+          const gap      = cur.transform[4] - (prev.transform[4] + (prev.width || 0));
+          const lineDiff = Math.abs(cur.transform[5] - prev.transform[5]);
+          if (lineDiff > fontSize * 0.5)  prefix = '\n';
+          else if (gap > fontSize * 0.15) prefix = ' ';
+        }
+        pageText += prefix;
+        itemMeta.push({
+          charStart: pageText.length,
+          charEnd:   pageText.length + cur.str.length,
+          transform: cur.transform,
+          width:     cur.width || 0,
+        });
+        pageText += cur.str;
       }
-      pageText += prefix;
-      itemMeta.push({ charStart: pageText.length, charEnd: pageText.length + cur.str.length,
-                      transform: cur.transform, width: cur.width || 0 });
-      pageText += cur.str;
+
+      const spans = mergeSpans(detectSpans(pageText));
+      if (spans.length) {
+        const vt = viewport.transform;
+        ctx.fillStyle = '#000000';
+        for (const span of spans) {
+          for (const meta of itemMeta) {
+            if (meta.charEnd <= span.start || meta.charStart >= span.end) continue;
+            const fontSize = Math.abs(meta.transform[3]) || 10;
+            const pdfW = meta.width > 0
+              ? meta.width
+              : fontSize * (meta.charEnd - meta.charStart) * 0.55;
+            const [cxL, cyB] = applyVT(vt, meta.transform[4] - 1,       meta.transform[5] - fontSize * 0.22);
+            const [cxR, cyT] = applyVT(vt, meta.transform[4] + pdfW + 1, meta.transform[5] + fontSize * 0.95);
+            ctx.fillRect(Math.min(cxL, cxR), Math.min(cyT, cyB), Math.abs(cxR - cxL), Math.abs(cyB - cyT));
+          }
+        }
+      }
     }
 
-    // Detect PII spans on this page's text
-    const spans = mergeSpans(detectSpans(pageText));
-    if (!spans.length) continue;
-
-    // Draw a black rectangle over every item that overlaps any detected span
-    for (const span of spans) {
-      for (const meta of itemMeta) {
-        if (meta.charEnd <= span.start || meta.charStart >= span.end) continue;
-        const fontSize = Math.abs(meta.transform[3]) || 10;
-        const x = meta.transform[4];
-        const y = meta.transform[5] - fontSize * 0.22;
-        const w = meta.width > 0 ? meta.width : fontSize * (meta.charEnd - meta.charStart) * 0.55;
-        const h = fontSize * 1.3;
-        pdfLibPage.drawRectangle({ x: x - 1, y, width: w + 2, height: h, color: rgb(0, 0, 0) });
-      }
-    }
+    const blob     = await new Promise(res => canvas.toBlob(res, 'image/jpeg', 0.93));
+    const imgBytes = new Uint8Array(await blob.arrayBuffer());
+    const embImg   = await pdfDoc.embedJpg(imgBytes);
+    const origVp   = pdfjsPage.getViewport({ scale: 1.0 });
+    const page     = pdfDoc.addPage([origVp.width, origVp.height]);
+    page.drawImage(embImg, { x: 0, y: 0, width: origVp.width, height: origVp.height });
   }
 
   return await pdfDoc.save();
