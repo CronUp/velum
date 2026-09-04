@@ -249,6 +249,32 @@ body{padding-bottom:34px}
 
 .hidden{display:none!important}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.brand-cursor{animation:none}}
+
+@media(max-width:768px){
+  .workspace{flex-direction:column;gap:8px;overflow:hidden}
+  .pane{min-height:280px;flex:1 1 auto}
+  .pane-body{max-height:45vh}
+  .drop{padding:16px 12px}
+  .drop-icon{font-size:20px}
+  .fmt-row{flex-wrap:wrap;gap:4px}
+  .cronup-bar{flex-wrap:wrap;gap:4px;padding:8px 12px;font-size:11px}
+  .cronup-sep{display:none}
+  .nav{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .nav-btn{padding:8px 12px;font-size:12px;white-space:nowrap}
+  .sid-row{flex-wrap:wrap;gap:6px}
+  .sid-row input{min-width:0;flex:1}
+  .result-toolbar{flex-wrap:wrap;gap:6px}
+  .acts{flex-wrap:wrap;gap:4px}
+  .btn{font-size:13px;padding:10px 16px}
+  .cw-tag{font-size:11px}
+  textarea{font-size:14px}
+}
+@media(max-width:480px){
+  .workspace{gap:6px}
+  .pane-body{max-height:38vh}
+  html,body{overflow:auto}
+  .priv-items{padding-left:16px}
+}
 </style>
 </head>
 <body>
@@ -353,11 +379,11 @@ body{padding-bottom:34px}
     <div class="pane">
       <div class="pane-hdr">
         <span class="pane-label live" id="lbl-input">Entrada</span>
-        <span style="font-family:var(--font-mono);font-size:10px;color:var(--t3)">JSON · XML · HTML · DOCX · XLSX · CSV · TXT · PDF · MD</span>
+        <span style="font-family:var(--font-mono);font-size:10px;color:var(--t3)">JSON · XML · HTML · DOCX · XLSX · CSV · TXT · PDF</span>
       </div>
       <div class="pane-body">
         <div class="drop" id="dropR" ondragover="doDragOver(event,'dropR')" ondragleave="doDragLeave('dropR')" ondrop="doDrop(event,'redact')">
-          <input type="file" id="fileR" accept=".json,.xml,.html,.htm,.docx,.xlsx,.csv,.tsv,.txt,.log,.pdf,.md" onchange="fileSelected(this,'redact')">
+          <input type="file" id="fileR" accept=".json,.xml,.html,.htm,.docx,.xlsx,.csv,.tsv,.txt,.log,.pdf" onchange="fileSelected(this,'redact')">
           <div class="drop-icon">⬡</div>
           <div class="drop-text">
             <span id="lbl-drop-hint">Arrastra el archivo aquí</span><br>
@@ -369,7 +395,6 @@ body{padding-bottom:34px}
             <span class="fmt">HTML</span><span class="fmt">DOCX</span>
             <span class="fmt">XLSX</span><span class="fmt">CSV</span>
             <span class="fmt">TXT</span><span class="fmt">PDF</span>
-            <span class="fmt">MD</span>
           </div>
         </div>
         <div id="fileRowR" class="file-row hidden">
@@ -453,7 +478,7 @@ body{padding-bottom:34px}
       </div>
       <div class="pane-body">
         <div class="drop" id="dropRR" ondragover="doDragOver(event,'dropRR')" ondragleave="doDragLeave('dropRR')" ondrop="doDrop(event,'restore')">
-          <input type="file" id="fileRR" accept=".json,.xml,.html,.htm,.docx,.xlsx,.csv,.tsv,.txt,.log,.pdf,.md" onchange="fileSelected(this,'restore')">
+          <input type="file" id="fileRR" accept=".json,.xml,.html,.htm,.docx,.xlsx,.csv,.tsv,.txt,.log,.pdf" onchange="fileSelected(this,'restore')">
           <div class="drop-icon">⬡</div>
           <div class="drop-text">
             <span id="lbl-drop-hint-rr">Arrastra el archivo devuelto por el AI</span><br>
@@ -463,7 +488,7 @@ body{padding-bottom:34px}
           <div class="fmt-row">
             <span class="fmt">DOCX</span><span class="fmt">XLSX</span>
             <span class="fmt">CSV</span><span class="fmt">TXT</span>
-            <span class="fmt">PDF</span><span class="fmt">MD</span>
+            <span class="fmt">PDF</span>
           </div>
         </div>
         <div id="fileRowRR" class="file-row hidden">
@@ -1389,7 +1414,7 @@ async function extractText(file) {
     return { text: parts.join('\n\n'), format: 'xlsx', wb, warning: null };
   }
 
-  // TXT / CSV / MD / fallback
+  // TXT / CSV / fallback
   const text = await file.text();
   return { text, format: ext, warning: null };
 }
@@ -1634,7 +1659,7 @@ async function buildRedactedFile(originalFile, redactedText, format, originalWb,
 
   // All others → preserve original format and extension
   const origExt = (originalFile.name.match(/\.([^.]+)$/) || ['','txt'])[1].toLowerCase();
-  const mimeMap = { csv:'text/csv', tsv:'text/tab-separated-values', md:'text/markdown', txt:'text/plain', log:'text/plain', json:'application/json', xml:'application/xml', html:'text/html', htm:'text/html' };
+  const mimeMap = { csv:'text/csv', tsv:'text/tab-separated-values', txt:'text/plain', log:'text/plain', json:'application/json', xml:'application/xml', html:'text/html', htm:'text/html' };
   const mime = mimeMap[origExt] || 'text/plain';
   const bytes = new TextEncoder().encode(redactedText);
   return { bytes, filename: addSuffix(safeName, 'redacted'), mime };
