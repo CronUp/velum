@@ -316,7 +316,7 @@ body{padding-bottom:34px}
       <ul class="priv-items">
         <li id="privWhy1">Comparte contexto con IAs sin exponer datos sensibles.</li>
         <li id="privWhy2">Compatible con texto, PDF, Word, Excel y hojas de cálculo.</li>
-        <li id="privWhy3">Restaura los datos originales desde la respuesta del AI.</li>
+        <li id="privWhy3">Restaura los datos originales desde la respuesta de la IA/LLM.</li>
         <li id="privWhy4">Detecta nombres, emails, teléfonos, tarjetas, IPs, secretos y más.</li>
       </ul>
     </div>
@@ -449,15 +449,34 @@ body{padding-bottom:34px}
   <div class="workspace">
     <div class="pane">
       <div class="pane-hdr">
-        <span class="pane-label live" id="lbl-ai-resp">Respuesta del AI</span>
+        <span class="pane-label live" id="lbl-ai-resp">Respuesta de la IA/LLM</span>
       </div>
       <div class="pane-body">
+        <div class="drop" id="dropRR" ondragover="doDragOver(event,'dropRR')" ondragleave="doDragLeave('dropRR')" ondrop="doDrop(event,'restore')">
+          <input type="file" id="fileRR" accept=".json,.xml,.html,.htm,.docx,.xlsx,.csv,.tsv,.txt,.log,.pdf,.md" onchange="fileSelected(this,'restore')">
+          <div class="drop-icon">⬡</div>
+          <div class="drop-text">
+            <span id="lbl-drop-hint-rr">Arrastra el archivo devuelto por el AI</span><br>
+            <span id="lbl-or-rr">o</span>
+            <strong onclick="el('fileRR').click()" id="lbl-browse-rr">selecciona desde tu equipo</strong>
+          </div>
+          <div class="fmt-row">
+            <span class="fmt">DOCX</span><span class="fmt">XLSX</span>
+            <span class="fmt">CSV</span><span class="fmt">TXT</span>
+            <span class="fmt">PDF</span><span class="fmt">MD</span>
+          </div>
+        </div>
+        <div id="fileRowRR" class="file-row hidden">
+          <span style="flex-shrink:0">▸</span><span id="fileNameRR" class="file-name"></span>
+          <button class="rm" onclick="clearFile('restore')">✕</button>
+        </div>
+        <div class="or"><span id="lbl-or2-rr">O</span></div>
         <div class="sid-row">
           <span class="sid-label-cell" id="lbl-sid">Sesión</span>
           <input type="text" id="sidInput" placeholder="ID de sesión…">
           <button class="sid-paste" id="btn-paste" onclick="pasteSid()">Pegar</button>
         </div>
-        <textarea id="textRR" placeholder="Pega la respuesta del AI aquí. Los tokens [NOMBRE_1], [EMAIL_1], etc. serán reemplazados."></textarea>
+        <textarea id="textRR" placeholder="Pega la respuesta de la IA/LLM aquí. Los tokens [NOMBRE_1], [EMAIL_1], etc. serán reemplazados."></textarea>
         <button class="btn btn-primary" id="btnRR" onclick="doRestore()">
           <span id="btnRRIcon">↑</span>
           <span id="btnRRText">Restaurar Datos Originales</span>
@@ -547,7 +566,7 @@ const STR = {
     or:'o', Or:'O', processing:'Procesando…',
     empty:'El resultado aparecerá aquí',
     ph_text:'Pega texto con datos sensibles: nombres, RUT, CUIT, emails, teléfonos, IPs, dominios, tarjetas, tokens, API keys…',
-    ph_restore:'Pega la respuesta del AI aquí. Los tokens [NOMBRE_1], [EMAIL_1], [SECRETO_1], etc. serán reemplazados.',
+    ph_restore:'Pega la respuesta de la IA/LLM aquí. Los tokens [NOMBRE_1], [EMAIL_1], [SECRETO_1], etc. serán reemplazados.',
     ph_sid:'ID de sesión…',
     entities: n => `${n} entidad${n!==1?'es':''}`,
     found:     n => `${n} dato${n!==1?'s':''} identificado${n!==1?'s':''}.`,
@@ -556,7 +575,7 @@ const STR = {
     err_no_text:'Pega el texto a restaurar.',
     restored:  n => `${n} token${n!==1?'s':''} restaurado${n!==1?'s':''}.`,
     confirm_clear:'¿Limpiar la sesión actual?',
-    lbl_ai_resp:'Respuesta del AI', lbl_sid_label:'Sesión', btn_paste:'Pegar',
+    lbl_ai_resp:'Respuesta de la IA/LLM', lbl_sid_label:'Sesión', btn_paste:'Pegar',
     lbl_restored_pane:'Resultado restaurado', lbl_restored_tag:'restaurado',
     empty_restored:'El resultado restaurado aparecerá aquí',
     lbl_cw:'Palabras adicionales', lbl_cw_opt:'opcional',
@@ -578,7 +597,7 @@ const STR = {
     priv_why_title:'¿Por qué VELUM Lite?',
     priv_why_1:'Comparte contexto con IAs sin exponer datos sensibles.',
     priv_why_2:'Compatible con texto, PDF, Word, Excel y hojas de cálculo.',
-    priv_why_3:'Restaura los datos originales desde la respuesta del AI.',
+    priv_why_3:'Restaura los datos originales desde la respuesta de la IA/LLM.',
     priv_why_4:'Detecta nombres, emails, teléfonos, tarjetas, IPs, secretos y más.',
     priv_src_title:'Código fuente abierto',
     priv_src_desc:'Puedes revisar, auditar y verificar cómo funciona cada línea de código.',
@@ -603,7 +622,7 @@ const STR = {
     err_no_text:'Paste the text to restore.',
     restored:  n => `${n} token${n!==1?'s':''} restored.`,
     confirm_clear:'Clear the current session?',
-    lbl_ai_resp:'AI Response', lbl_sid_label:'Session', btn_paste:'Paste',
+    lbl_ai_resp:'AI/LLM Response', lbl_sid_label:'Session', btn_paste:'Paste',
     lbl_restored_pane:'Restored Result', lbl_restored_tag:'restored',
     empty_restored:'Restored result will appear here',
     lbl_cw:'Additional words', lbl_cw_opt:'optional',
@@ -625,7 +644,7 @@ const STR = {
     priv_why_title:'Why VELUM Lite?',
     priv_why_1:'Share context with AI without exposing sensitive data.',
     priv_why_2:'Works with text, PDF, Word, Excel and spreadsheets.',
-    priv_why_3:'Restore original data from the AI\'s response.',
+    priv_why_3:'Restore original data from the AI/LLM response.',
     priv_why_4:'Detects names, emails, phones, cards, IPs, secrets and more.',
     priv_src_title:'Open Source Code',
     priv_src_desc:'You can review, audit and verify how every line of code works.',
@@ -650,7 +669,7 @@ const STR = {
     err_no_text:'Cole o texto a restaurar.',
     restored:  n => `${n} token${n!==1?'s':''} restaurado${n!==1?'s':''}.`,
     confirm_clear:'Limpar a sessão atual?',
-    lbl_ai_resp:'Resposta da IA', lbl_sid_label:'Sessão', btn_paste:'Colar',
+    lbl_ai_resp:'Resposta da IA/LLM', lbl_sid_label:'Sessão', btn_paste:'Colar',
     lbl_restored_pane:'Resultado restaurado', lbl_restored_tag:'restaurado',
     empty_restored:'O resultado restaurado aparecerá aqui',
     lbl_cw:'Palavras adicionais', lbl_cw_opt:'opcional',
@@ -1780,9 +1799,19 @@ async function doRedact() {
 // ══════════════════════════════════════════════════════
 
 async function doRestore() {
-  const sid  = el('sidInput').value.trim();
-  const text = el('textRR').value.trim();
-  if (!sid)  { alert(T('err_no_sid'));  return; }
+  const sid = el('sidInput').value.trim();
+  if (!sid) { alert(T('err_no_sid')); return; }
+
+  // Source: uploaded file takes priority over textarea
+  let text;
+  if (S.files.restore) {
+    try {
+      const extracted = await extractText(S.files.restore);
+      text = extracted.text.trim();
+    } catch(e) { alert('Error al leer archivo: ' + e.message); return; }
+  } else {
+    text = el('textRR').value.trim();
+  }
   if (!text) { alert(T('err_no_text')); return; }
 
   setLoading('RR', true);
@@ -1951,12 +1980,21 @@ function setFile(f, mode) {
   if (mode === 'redact') {
     el('fileNameR').textContent = maskFilename(f.name);
     el('fileRowR').classList.remove('hidden');
+  } else if (mode === 'restore') {
+    el('fileNameRR').textContent = f.name;
+    el('fileRowRR').classList.remove('hidden');
+    el('textRR').value = '';  // limpiar textarea al subir archivo
   }
 }
 function clearFile(mode) {
   S.files[mode] = null;
-  el('fileR').value = '';
-  el('fileRowR').classList.add('hidden');
+  if (mode === 'redact') {
+    el('fileR').value = '';
+    el('fileRowR').classList.add('hidden');
+  } else if (mode === 'restore') {
+    el('fileRR').value = '';
+    el('fileRowRR').classList.add('hidden');
+  }
 }
 
 
