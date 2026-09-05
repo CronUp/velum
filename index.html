@@ -241,13 +241,14 @@ textarea::placeholder{color:var(--t3)}
 .cw-tag button:hover{color:var(--err)}
 
 /* ── CronUp footer bar ── */
-.cronup-bar{display:flex;align-items:center;gap:10px;padding:7px 24px;background:var(--s1);border-top:1px solid var(--edge);font-family:var(--font-mono);font-size:10px;color:var(--t3);letter-spacing:.04em;position:fixed;bottom:0;left:0;right:0;z-index:100}
+.cronup-bar{display:flex;flex-direction:column;gap:3px;padding:6px 24px;background:var(--s1);border-top:1px solid var(--edge);font-family:var(--font-mono);font-size:10px;color:var(--t3);letter-spacing:.04em;position:fixed;bottom:0;left:0;right:0;z-index:100}
+.cronup-top{display:flex;align-items:center;gap:8px}
 .cronup-link{display:flex;align-items:center;gap:6px;color:var(--accent);text-decoration:none;font-weight:500;white-space:nowrap;transition:opacity .15s}
 .cronup-link:hover{opacity:.75}
 .cronup-sep{color:var(--t4)}
-.cronup-note{color:var(--t3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cronup-note{color:var(--t3);font-size:9px}
 /* Compensate for fixed footer height */
-body{padding-bottom:34px}
+body{padding-bottom:52px}
 
 .hidden{display:none!important}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.brand-cursor{animation:none}}
@@ -261,8 +262,8 @@ body{padding-bottom:34px}
   .drop-text{font-size:11px;line-height:1.5}
   .fmt-row{flex-wrap:wrap;gap:3px;margin-top:5px}
   .fmt{font-size:8px;padding:1px 5px}
-  .cronup-bar{flex-wrap:wrap;gap:4px;padding:8px 12px;font-size:11px}
-  .cronup-sep{display:none}
+  .cronup-bar{padding:5px 12px}
+  .result-body{max-height:28vh}
   .hdr-sep{display:none}
   .mode-pill{display:none}
   .mob-menu-btn{display:flex}
@@ -274,7 +275,7 @@ body{padding-bottom:34px}
   .sid-row input{min-width:0;flex:1;font-size:11px}
   .result-toolbar{flex-wrap:wrap;gap:6px}
   .acts{flex-wrap:wrap;gap:4px}
-  .btn{font-size:13px;padding:14px 16px}
+  .btn{font-size:13px;padding:10px 16px}
   .cw-tag{font-size:11px}
   textarea{font-size:11px}
   .line-num{font-size:9px;line-height:1.5}
@@ -375,16 +376,15 @@ body{padding-bottom:34px}
 
 <!-- ── CronUp footer ── -->
 <div class="cronup-bar">
-  <a href="https://www.cronup.com" target="_blank" rel="noopener" class="cronup-link">
-    Intel by CronUp Ciberseguridad
-  </a>
-  <span class="cronup-sep">·</span>
-  <span class="cronup-note" id="cronup-note">Todo el procesamiento ocurre en tu navegador. Ningún dato sale de tu equipo.</span>
-  <span class="cronup-sep">·</span>
-  <a href="https://github.com/CronUp/velum" target="_blank" rel="noopener" class="cronup-link" style="gap:4px">
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex-shrink:0"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.744 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
-    Source
-  </a>
+  <div class="cronup-top">
+    <a href="https://www.cronup.com" target="_blank" rel="noopener" class="cronup-link">Intel by CronUp Ciberseguridad</a>
+    <span class="cronup-sep">|</span>
+    <a href="https://github.com/CronUp/velum" target="_blank" rel="noopener" class="cronup-link" style="gap:4px">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex-shrink:0"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.744 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+      Source
+    </a>
+  </div>
+  <span class="cronup-note" id="cronup-note">Todo el proceso ocurre en tu navegador. 100% local</span>
 </div>
 
 <!-- ═══ PANEL: REDACTAR ═══ -->
@@ -625,7 +625,7 @@ const STR = {
     sess_warn:'Este mapa contiene los valores originales. No lo compartas ni lo subas a ningún servicio externo.',
     th_token:'Token', th_original:'Valor original',
     btn_dl_map:'⬇ Descargar mapping.json', btn_clear_sess:'Limpiar sesión',
-    footer_note:'Todo el procesamiento ocurre en tu navegador. Ningún dato sale de tu equipo.',
+    footer_note:'Todo el proceso ocurre en tu navegador. 100% local',
     priv_title:'Privacidad 100% local',
     priv_sub:'Todo el procesamiento ocurre en tu navegador. Ningún dato sale de tu equipo.',
     priv_how_title:'Cómo funciona',
@@ -672,7 +672,7 @@ const STR = {
     sess_warn:'This map contains original values. Do not share or upload it to any external service.',
     th_token:'Token', th_original:'Original value',
     btn_dl_map:'⬇ Download mapping.json', btn_clear_sess:'Clear session',
-    footer_note:'All processing happens in your browser. No data leaves your device.',
+    footer_note:'All processing happens in your browser. 100% local',
     priv_title:'100% Local Privacy',
     priv_sub:'All processing happens in your browser. No data ever leaves your device.',
     priv_how_title:'How it works',
@@ -719,7 +719,7 @@ const STR = {
     sess_warn:'Este mapa contém os valores originais. Não o compartilhe nem envie a nenhum serviço externo.',
     th_token:'Token', th_original:'Valor original',
     btn_dl_map:'⬇ Baixar mapping.json', btn_clear_sess:'Limpar sessão',
-    footer_note:'Todo o processamento ocorre no seu navegador. Nenhum dado sai do seu dispositivo.',
+    footer_note:'Todo o processo ocorre no seu navegador. 100% local',
     priv_title:'Privacidade 100% local',
     priv_sub:'Todo o processamento ocorre no seu navegador. Nenhum dado sai do seu dispositivo.',
     priv_how_title:'Como funciona',
@@ -1688,7 +1688,7 @@ async function buildRedactedFile(originalFile, redactedText, format, originalWb,
 // CUSTOM WORDS
 // ══════════════════════════════════════════════════════
 
-const CUSTOM_WORDS = ['CronUp','Atrc'];
+const CUSTOM_WORDS = [];
 
 const _ACCENT_MAP = {'a':'[aáàâäãåAÁÀÂÄÃÅ]','e':'[eéèêëEÉÈÊË]','i':'[iíìîïIÍÌÎÏ]',
   'o':'[oóòôöõøOÓÒÔÖÕØ]','u':'[uúùûüUÚÙÛÜ]','n':'[nñNÑ]','c':'[cçCÇ]'};
