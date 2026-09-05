@@ -76,6 +76,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-ui);font-size
 @keyframes blink{50%{opacity:0}}
 .hdr-sep{width:1px;height:20px;background:var(--edge)}
 .nav{display:flex}
+.mob-menu-btn{display:none;background:none;border:1px solid var(--edge);color:var(--t2);cursor:pointer;width:32px;height:32px;font-size:15px;align-items:center;justify-content:center;flex-shrink:0;transition:color .15s,border-color .15s}
+.mob-menu-btn:hover{color:var(--text);border-color:var(--wire)}
 .nav-btn{padding:6px 14px;border:none;background:none;color:var(--t2);cursor:pointer;font-family:var(--font-ui);font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s;white-space:nowrap}
 .nav-btn:hover{color:var(--text)}
 .nav-btn.on{color:var(--accent);border-bottom-color:var(--accent)}
@@ -254,20 +256,31 @@ body{padding-bottom:34px}
   .workspace{flex-direction:column;gap:8px;overflow:hidden}
   .pane{min-height:280px;flex:1 1 auto}
   .pane-body{max-height:45vh}
-  .drop{padding:16px 12px}
-  .drop-icon{font-size:20px}
-  .fmt-row{flex-wrap:wrap;gap:4px}
+  .drop{padding:7px 10px}
+  .drop-icon{display:none}
+  .drop-text{font-size:11px;line-height:1.5}
+  .fmt-row{flex-wrap:wrap;gap:3px;margin-top:5px}
+  .fmt{font-size:8px;padding:1px 5px}
   .cronup-bar{flex-wrap:wrap;gap:4px;padding:8px 12px;font-size:11px}
   .cronup-sep{display:none}
-  .nav{overflow-x:auto;-webkit-overflow-scrolling:touch}
-  .nav-btn{padding:8px 12px;font-size:12px;white-space:nowrap}
+  .hdr-sep{display:none}
+  .mode-pill{display:none}
+  .mob-menu-btn{display:flex}
+  .nav{display:none;position:absolute;top:52px;left:0;right:0;flex-direction:column;background:var(--s1);border-bottom:1px solid var(--edge);z-index:199;padding:4px 0;box-shadow:0 6px 16px rgba(0,0,0,.18)}
+  .nav.open{display:flex}
+  .nav-btn{padding:14px 20px;font-size:13px;text-align:left;border-bottom:none!important;border-left:3px solid transparent;margin-bottom:0;letter-spacing:.04em}
+  .nav-btn.on{border-left-color:var(--accent);color:var(--accent)}
   .sid-row{flex-wrap:wrap;gap:6px}
-  .sid-row input{min-width:0;flex:1}
+  .sid-row input{min-width:0;flex:1;font-size:11px}
   .result-toolbar{flex-wrap:wrap;gap:6px}
   .acts{flex-wrap:wrap;gap:4px}
-  .btn{font-size:13px;padding:10px 16px}
+  .btn{font-size:13px;padding:14px 16px}
   .cw-tag{font-size:11px}
-  textarea{font-size:14px}
+  textarea{font-size:11px}
+  .line-num{font-size:9px;line-height:1.5}
+  .line-nums{min-width:30px}
+  .result-text{font-size:9px;line-height:1.5;padding:8px 10px}
+  .pane-body{gap:10px}
 }
 @media(max-width:480px){
   .workspace{gap:6px}
@@ -308,6 +321,7 @@ body{padding-bottom:34px}
   </nav>
 
   <div class="hdr-right">
+    <button class="mob-menu-btn" onclick="toggleMobMenu()" title="Menú">☰</button>
     <div class="mode-pill" onclick="openPrivacyModal()" role="button" tabindex="0" title="Haz clic para conocer más sobre privacidad" onkeydown="if(event.key==='Enter'||event.key===' ')openPrivacyModal()">
       <span class="mode-dot"></span>
       <span style="font-family:var(--font-mono);font-size:10px">100% local · browser</span>
@@ -2033,8 +2047,18 @@ function goto(tab) {
   el('panel-' + tab).classList.add('on');
   const idx = ['redact','restore','session'].indexOf(tab);
   document.querySelectorAll('.nav-btn')[idx].classList.add('on');
+  document.querySelector('.nav').classList.remove('open');
   if (tab === 'session') loadSession();
 }
+
+function toggleMobMenu() {
+  document.querySelector('.nav').classList.toggle('open');
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.nav') && !e.target.closest('.mob-menu-btn'))
+    document.querySelector('.nav').classList.remove('open');
+});
 
 function toggleTheme() {
   const root = document.documentElement;
@@ -2092,6 +2116,12 @@ window.addEventListener('DOMContentLoaded', () => {
 window.addEventListener('beforeunload', () => {
   if (SESSION.current) localStorage.setItem('velum_lite_current', SESSION.current);
 });
+
+// iOS: prevent viewport zoom on textarea focus when font-size < 16px
+if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+  document.addEventListener('focusin',  e => { if (e.target.tagName === 'TEXTAREA') e.target.style.fontSize = '16px'; });
+  document.addEventListener('focusout', e => { if (e.target.tagName === 'TEXTAREA') e.target.style.fontSize = ''; });
+}
 </script>
 </body>
 </html>
