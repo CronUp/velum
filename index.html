@@ -176,7 +176,7 @@ textarea::placeholder{color:var(--t3)}
 .result-text{flex:1;padding:12px 16px;font-family:var(--font-mono);font-size:12px;line-height:1.8;color:var(--text);white-space:pre-wrap;word-break:break-word}
 .result-empty{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;color:var(--t3);font-family:var(--font-mono);font-size:12px;letter-spacing:.04em;padding:40px;text-align:center}
 .empty-glyph{font-size:28px;opacity:.3}
-.tok{background:var(--aD);border:1px solid var(--aM);color:var(--accent);font-family:var(--font-mono);padding:0 5px;border-radius:2px;font-size:.93em;box-shadow:0 0 6px var(--aD);font-weight:500}
+.tok{background:var(--aD);border:1px solid var(--aM);color:var(--accent);font-family:var(--font-mono);padding:0 5px;border-radius:2px;font-size:.93em;box-shadow:0 0 6px var(--aD);font-weight:700}
 
 /* Scan line */
 .scanning{position:relative;overflow:hidden}
@@ -903,18 +903,25 @@ const PATTERNS = [
   // ── Reference / booking / document codes ──
 
   // 1. Hyphenated codes with numeric suffix (most common internal format)
-  //    SURA-CIB-PR-ATRc-001 · ISO-27001-2013 · CVE-2024-12345 · DOC-REF-2024-001
+  //    ORG-DIV-PR-REG-001 · ISO-27001-2013 · CVE-2024-12345 · DOC-REF-2024-001
   //    Structure: ACRONYM(-segment){1-5}-digits
   ['CODIGO', /\b[A-Z]{2,10}(?:-[A-Za-z0-9]{1,14}){1,5}-\d{2,10}\b/g, 0.86],
 
   // 2. Hyphenated codes where every segment starts uppercase (no digit suffix required)
-  //    NIST-SP-LOW-MOD · SURA-CIB-PR-CMF · PROC-SEC-ENT-SIM
+  //    NIST-SP-LOW-MOD · ORG-DIV-PR-CMF · PROC-SEC-ENT-SIM
   //    Requires 4+ total segments to avoid plain hyphenated words
   ['CODIGO', /\b[A-Z]{3,}(?:-[A-Z][A-Za-z0-9]{1,13}){3,}\b/g, 0.78],
 
   // 3. Alphanumeric booking codes: 2-5 uppercase prefix + 7+ digits + optional trailing letter(s)
-  //    TB1782434753032b · AA123456789 · EC1234567890
+  //    XX1782434753032b · ZZ123456789 · YY1234567890
   ['CODIGO', /\b[A-Z]{2,5}\d{7,}[A-Za-z]{0,2}\b/g, 0.85],
+  // 4. Short alphanumeric codes: 1-3 uppercase letters + 3-5 digits or reverse (XY612 · Z737 · 612XY)
+  ['CODIGO', /\b(?:[A-Z]{1,3}\d{3,5}|\d{3,5}[A-Z]{1,3})\b/g, 0.76],
+  // 5. PNR-style localizador: 6-8 uppercase consonants with no vowels (KRTMBN · XKJFML)
+  ['CODIGO', /\b[BCDFGHJKLMNPQRSTVWXYZ]{6,8}\b/g, 0.80],
+  // GPS coordinates: decimal degrees pair, ≥4 decimal places each — "12.3456, -98.7654"
+  // Lookbehind/ahead prevent matching within larger numbers; ≥4 decimals avoids prices/versions
+  ['GPS', /(?<![.\d])-?\d{1,3}\.\d{4,},\s*-?\d{1,3}\.\d{4,}(?![.\d])/g, 0.88],
   // UUID: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
   ['CODIGO', /\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/gi, 0.91],
 
@@ -928,10 +935,20 @@ const PATTERNS = [
   ['TARJETA', /\b4\d{3}[\s\-]?\d{4}[\s\-]?\d{4}[\s\-]?\d{4}\b/g,         0.95],
   ['TARJETA', /\b5[1-5]\d{2}[\s\-]?\d{4}[\s\-]?\d{4}[\s\-]?\d{4}\b/g,    0.95],
   ['TARJETA', /\b3[47]\d{2}[\s\-]?\d{6}[\s\-]?\d{5}\b/g,                  0.95],
-  // IBAN
+  // IBAN compact (no spaces): XX9912345600000123456789
   ['CUENTA',  /\b[A-Z]{2}\d{2}[A-Z0-9]{4}\d{7}(?:[A-Z0-9]{0,16})?\b/g,   0.90],
+  // IBAN with spaces (display format): XX99 1234 5600 0001 2345 6789
+  ['CUENTA',  /\b[A-Z]{2}\d{2}(?:[ ][A-Z0-9]{4}){3,6}(?:[ ][A-Z0-9]{1,4})?\b/g, 0.90],
+  // MAC address: a1:b2:c3:d4:e5:f6 or A1-B2-C3-D4-E5-F6
+  ['CODIGO',  /\b(?:[0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}\b|\b(?:[0-9a-fA-F]{2}-){5}[0-9a-fA-F]{2}\b/g, 0.92],
   // Crypto wallet
-  ['WALLET',  /\b(?:[13][a-km-zA-HJ-NP-Z1-9]{25,34}|0x[a-fA-F0-9]{40})\b/g, 0.88],
+  ['WALLET',  /\b(?:[13][a-km-zA-HJ-NP-Z1-9]{25,34}|0x[a-fA-F0-9]{40}|(?:bc|tb|ltc)1[a-z0-9]{25,87})\b/g, 0.88],
+  // Company/organization name + legal entity suffix (LATAM · US · EU)
+  // "EMPRESA S.A." · "AEROLINEA SPA" · "BANCO REGIONAL S.A." · "ASEGURADORA SAS"
+  ['ORGANIZACION', /\b[A-ZÁÉÍÓÚÑÜ][A-Za-záéíóúñü0-9&._'-]*(?:\s+(?:(?:de|del|y|do|da|dos|das|and|of)\s+)?[A-ZÁÉÍÓÚÑÜ][A-Za-záéíóúñü0-9&._'-]*){0,4}\s+(?:S\.A\.(?:\s+de\s+C\.V\.)?|S\/A|SpA|SPA|S\.P\.A\.|S\.R\.L\.?|SRL|S\.A\.S\.?|S\.A\.C\.?|S\.A\.A\.|E\.I\.R\.L\.?|EIRL|EIRELI|Ltda?\.?|LTDA|LLC|LLP|Inc\.?|Corp\.?|Ltd\.?|PLC|GmbH|A\.G\.|B\.V\.|N\.V\.)(?!\w)/g, 0.87],
+  // Company names that begin with a corporate prefix word (no suffix required)
+  // "Empresas Alfa" · "Empresas Seguros Beta" · "Banco Regional" · "Holding XYZ" · "Constructora Delta"
+  ['ORGANIZACION', /\b(?:Empresas?|Corporaci[oó]n|Holding|Banco|Seguros|Constructora|Inmobiliaria|Distribuidora|Comercializadora|Fundaci[oó]n|Cooperativa|Consultora|Aseguradora|Reaseguradora|Financiera|Arrendadora|Importadora|Exportadora)\s+(?:(?:de|del|los?|las?|el|la)\s+)?[A-ZÁÉÍÓÚÑÜ][A-Za-záéíóúñü0-9&._'-]{2,}(?:\s+(?:(?:de|del|y|do|da|and|of)\s+)?[A-ZÁÉÍÓÚÑÜ][A-Za-záéíóúñü0-9&._'-]*){0,3}/g, 0.78],
   // Phone with formatting (require separators to avoid false positives)
   ['TELEFONO',/\+\d{1,3}[\s.\-]\(?\d{1,4}\)?[\s.\-]?\d{2,4}[\s.\-]?\d{3,5}\b/g, 0.92],
   ['TELEFONO',/\(\d{2,4}\)\s?\d{3,5}[\s.\-]\d{3,5}\b/g,                   0.88],
@@ -1146,7 +1163,7 @@ const NOT_NAMES = new Set([
 ]);
 
 // Context prefixes that strongly indicate a person name follows
-const NAME_CTX_RE = /(?:Sr\.?\s*|Sra\.?\s*|Dr\.?\s*|Dra\.?\s*|Ing\.?\s*|Lic\.?\s*|Prof\.?\s*|Don\s+|Doña\s+|Mr\.?\s*|Mrs\.?\s*|Ms\.?\s*|Miss\s+|Br\.?\s*|Eng\.?\s*|nombre\s*:\s*|paciente\s*:\s*|cliente\s*:\s*|solicitante\s*:\s*|representante\s*:\s*|titular\s*:\s*|firmado\s+por\s*:?\s*|elaborado\s+por\s*:?\s*|preparado\s+por\s*:?\s*|aprobado\s+por\s*:?\s*|revisado\s+por\s*:?\s*|autorizado\s+por\s*:?\s*|signed\s+by\s*:?\s*|prepared\s+by\s*:?\s*|submitted\s+by\s*:?\s*|reviewed\s+by\s*:?\s*|approved\s+by\s*:?\s*|authorized\s+by\s*:?\s*|issued\s+to\s*:?\s*|attn\s*\.?\s*:?\s*|attention\s*:\s*|on\s+behalf\s+of\s*:?\s*|author\s*:\s*|contact\s*:\s*|employee\s*:\s*|customer\s*:\s*|patient\s*:\s*|applicant\s*:\s*|claimant\s*:\s*|nome\s*:\s*|assinado\s+por\s*:?\s*|aprovado\s+por\s*:?\s*|autor\s*:\s*)([A-ZÁÉÍÓÚÀÂÃÊÔÕÜÇ][a-záéíóúàâãêôõüçñ]{1,}(?:\s+[A-ZÁÉÍÓÚÀÂÃÊÔÕÜÇ][a-záéíóúàâãêôõüçñ]{1,}){1,3})/g;
+const NAME_CTX_RE = /(?:Sr\.?\s*|Sra\.?\s*|Dr\.?\s*|Dra\.?\s*|Ing\.?\s*|Lic\.?\s*|Prof\.?\s*|Don\s+|Doña\s+|Mr\.?\s*|Mrs\.?\s*|Ms\.?\s*|Miss\s+|Br\.?\s*|Eng\.?\s*|nombre\s*:\s*|apellido[s]?\s*:?\s*|pasajero\s*:?\s*|viajero\s*:?\s*|paciente\s*:\s*|cliente\s*:\s*|solicitante\s*:\s*|representante\s*:\s*|titular\s*:\s*|passenger\s*:?\s*|traveler\s*:?\s*|surname\s*:\s*|last\s+name\s*:\s*|firmado\s+por\s*:?\s*|elaborado\s+por\s*:?\s*|preparado\s+por\s*:?\s*|aprobado\s+por\s*:?\s*|revisado\s+por\s*:?\s*|autorizado\s+por\s*:?\s*|signed\s+by\s*:?\s*|prepared\s+by\s*:?\s*|submitted\s+by\s*:?\s*|reviewed\s+by\s*:?\s*|approved\s+by\s*:?\s*|authorized\s+by\s*:?\s*|issued\s+to\s*:?\s*|attn\s*\.?\s*:?\s*|attention\s*:\s*|on\s+behalf\s+of\s*:?\s*|author\s*:\s*|contact\s*:\s*|employee\s*:\s*|customer\s*:\s*|patient\s*:\s*|applicant\s*:\s*|claimant\s*:\s*|nome\s*:\s*|assinado\s+por\s*:?\s*|aprovado\s+por\s*:?\s*|autor\s*:\s*)([A-ZÁÉÍÓÚÀÂÃÊÔÕÜÇ][a-záéíóúàâãêôõüçñ]{1,}(?:\s+[A-ZÁÉÍÓÚÀÂÃÊÔÕÜÇ][a-záéíóúàâãêôõüçñ]{1,}){1,3})/g;
 
 // Base de nombres y apellidos populares en países hispanohablantes + BR/PT (top-100 por país)
 // Almacenados en minúsculas sin acentos para comparación insensible
@@ -1157,7 +1174,7 @@ function _normStr(s){ return s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCa
 
 // Two consecutive Title Case words ≥ 5 chars, not in NOT_NAMES set
 const PAIR_RE = /\b([A-ZÁÉÍÓÚÑÜ][a-záéíóúñü]{4,})\s+([A-ZÁÉÍÓÚÑÜ][a-záéíóúñü]{4,})\b/g;
-// ALL CAPS sequences of 2-4 words ≥ 3 chars each (e.g. GERMAN ALONSO FERNANDEZ BACIAN)
+// ALL CAPS sequences of 2-4 words ≥ 3 chars each (e.g. NOMBRE APELLIDO SEGUNDO APELLIDO)
 const CAPS_NAME_RE = /\b[A-ZÁÉÍÓÚÑÜ]{3,}(?:\s+[A-ZÁÉÍÓÚÑÜ]{3,}){1,3}\b/g;
 // Sufijos de sustantivos abstractos y verbos — nunca son nombres propios
 const _NOT_NAME_SUFFIX = /(?:ción|ciones|sión|siones|idad|idades|miento|mientos|amiento|imientos|ancia|encias|anza|anzas|mente|ismo|ista|ables|ibles|ador|adora|ores|ando|endo|ificar|izado|izados|izar|itud|itudes|itar|ular|onal|eral|ados|adas|ivas|ivos|ção|ções|ção|dade|dades|mento|mentos|ância|ências|ança|mente|ismo|ável|icar|izado|izar|itude|itudes|itar|ção|ção|ment|ness|tion|sion|tion|ance|ence|ings|ized|izer|izing|ator|ators|ation|ations|ality|ities|ible|ables|ishes|ifies|ifier)$/i;
@@ -1218,6 +1235,57 @@ function detectSpans(text) {
     }
   }
 
+  // Short first-name pairs: "Ana López", "Luis Torres" — first word 2-4 chars, both in known lists
+  const shortPairRe = new RegExp(/\b([A-ZÁÉÍÓÚÑÜ][a-záéíóúñü]{1,3})\s+([A-ZÁÉÍÓÚÑÜ][a-záéíóúñü]{2,})\b/.source, 'g');
+  while ((m2 = shortPairRe.exec(text)) !== null) {
+    const w1 = m2[1], w2 = m2[2];
+    const n1 = _normStr(w1), n2 = _normStr(w2);
+    const validShort = (KNOWN_FORENAMES.has(n1) && (KNOWN_FORENAMES.has(n2) || KNOWN_SURNAMES.has(n2))) ||
+                       (KNOWN_SURNAMES.has(n1) && KNOWN_SURNAMES.has(n2));
+    if (validShort && !NOT_NAMES.has(w1) && !NOT_NAMES.has(w2) &&
+        !_NOT_NAME_SUFFIX.test(w1) && !_NOT_NAME_SUFFIX.test(w2)) {
+      spans.push({ start: m2.index, end: m2.index + m2[0].length, type: 'NOMBRE', score: 0.58 });
+    }
+  }
+
+  // Single known names/surnames: catches standalone entries in separate table columns
+  // Title-case words that are in the known-name dictionaries
+  const singleRe = new RegExp(/\b([A-ZÁÉÍÓÚÑÜ][a-záéíóúñü]{2,})\b/.source, 'g');
+  let m5;
+  while ((m5 = singleRe.exec(text)) !== null) {
+    const w = m5[1], n = _normStr(w);
+    if ((KNOWN_FORENAMES.has(n) || KNOWN_SURNAMES.has(n)) &&
+        !NOT_NAMES.has(w) && !_NOT_NAME_SUFFIX.test(w) && !_NOT_NAMES_NORM.has(n)) {
+      spans.push({ start: m5.index, end: m5.index + w.length, type: 'NOMBRE', score: 0.45 });
+    }
+  }
+
+  // Organization via context keyword: "cliente Banco Regional" · "EMPRESA: FABRICA S.A."
+  const orgCtxRe = /(?:cliente|proveedor|comprador|vendedor|contratista|mandante|contratante|arrendatario|arrendador|deudor|acreedor|beneficiario|asegurado|distribuidor|concesionario|company|client|vendor|supplier|buyer|seller|contractor|provider|empresa|fornecedor|sociedad|raz[oó]n\s+social)\s*[:\-–]?\s+(\S+(?:\s+\S+){0,6})/gi;
+  let mOrg;
+  while ((mOrg = orgCtxRe.exec(text)) !== null) {
+    const raw = mOrg[1];
+    const toks = raw.split(/\s+/);
+    const orgWords = [];
+    for (const tok of toks) {
+      if (/^[A-ZÁÉÍÓÚÑÜ]/.test(tok)) {
+        orgWords.push(tok);
+      } else if (/^(?:de|del|y|do|da|dos|das|and|of|&)$/i.test(tok) && orgWords.length > 0) {
+        orgWords.push(tok);
+      } else break;
+      if (orgWords.length >= 5) break;
+    }
+    while (orgWords.length && /^(?:de|del|y|do|da|dos|das|and|of|&)$/i.test(orgWords[orgWords.length - 1]))
+      orgWords.pop();
+    if (!orgWords.length) continue;
+    const orgName = orgWords.join(' ');
+    const first = _normStr(orgWords[0]);
+    if (KNOWN_FORENAMES.has(first)) continue;
+    if (NOT_NAMES.has(orgWords[0])) continue;
+    const capStart = mOrg.index + mOrg[0].length - raw.length;
+    spans.push({ start: capStart, end: capStart + orgName.length, type: 'ORGANIZACION', score: 0.78 });
+  }
+
   // ALL CAPS names (e.g. GERMAN ALONSO FERNANDEZ BACIAN)
   const capsRe = new RegExp(CAPS_NAME_RE.source, CAPS_NAME_RE.flags);
   let m3;
@@ -1238,9 +1306,32 @@ function detectSpans(text) {
   // Structure B: KEYWORD No./Ref./#/ID : CODE              (EN)
   // Structure C: KEYWORD N°/Nº : CODE                      (PT · ES)
   const codeCtxRe = /(?:(?:N[°º]\.?|NRO?\.?|N[ÚU]M(?:ERO)?\.?|NUM\.?)\s*(?:DE\s+|DO\s+|DA\s+|OF\s+)?(?:RESERVA|BILHETE|BOLETO|TICKET|PEDIDO|FATURA|FOLIO|COMPROBANTE|COMPROVANTE|TRANSACCI[OÓ]N|TRANSA[ÇC][ÃA]O|OPERACI[OÓ]N|ORDEN|ORDER|P[OÓ]LIZA|AP[OÓ]LICE|CONFIRMACI[OÓ]N|CONFIRMAC[ÃA]O|LOCALIZADOR|VOUCHER|PASAJE|PASAGEM|DESPACHO|EMBARQUE|BOOKING|RESERVATION|INVOICE|RECEIPT|TRACKING|SHIPMENT|FLIGHT|POLICY|REFERENCE|AUTHORIZATION|CLEARANCE)|(?:BOOKING|RESERVATION|FLIGHT|ORDER|INVOICE|TRANSACTION|CONFIRMATION|TRACKING|RECEIPT|SHIPMENT|REFERENCE|POLICY|AUTHORIZATION|CANCELLATION|CLEARANCE)\s*(?:N[°º#]?|NO\.?|REF\.?|NUMBER\.?|ID|NUM\.?|CODE|#)?|(?:COMPROVANTE|COMPROBANTE|BILHETE|BOLETO|PEDIDO|FATURA|TRANSA[ÇC][ÃA]O|TRANSACCI[OÓ]N|RESERVA|LOCALIZADOR|FOLIO|EMBARQUE|PASAJE|PASAGEM)\s*(?:N[°º]?|NO\.?|REF\.?|:)?)[\s\n:]*([A-Z0-9][A-Z0-9a-z]{4,})/gi;
+  // Common document-label words that should never be treated as codes
+  const _CODE_STOP = new Set([
+    'PASAJERO','PASAJERA','PASAJEROS','PASAJE','ADULTO','ADULTOS','INFANTE','MENOR','MENORES',
+    'VUELO','FECHA','CLASE','ASIENTO','ASIENTOS','PUERTA','DESTINO','ORIGEN','SALIDA','LLEGADA',
+    'NOMBRE','NOMBRES','ESTADO','TOTAL','PRECIO','PRECIOS','SERVICIO','SERVICIOS',
+    'EQUIPAJE','DESPACHO','POLITICA','CONDICION','CONDICIONES','IMPUESTO','IMPUESTOS',
+    'CARGO','CARGOS','SEGURO','DESCUENTO','CANCELACION','REEMBOLSO','CONSULTA',
+    'PROCESO','SISTEMA','USUARIO','PERFIL','ACCESO','ENTRADA','DISPONIBLE',
+    'CONFIRMADO','PENDIENTE','CANCELADO','EMITIDO','VIGENTE','VENCIDO','ACTIVO',
+    'INACTIVO','BLOQUEADO','SUSPENDIDO','RESERVADO','INCLUYE','INCLUIDO','INCLUIDOS',
+    'TERMINAL','PASSENGER','DEPARTURE','ARRIVAL','ECONOMY','BUSINESS','FIRST',
+    'STATUS','CONFIRMED','CANCELLED','PENDING','ISSUED','ACTIVE','INACTIVE','BLOCKED',
+    'INCLUDED','INCLUDES','EXCLUDES','LUGGAGE','BAGGAGE','CABIN','GATE','SEAT',
+    'CLASS','BOARD','CHECK','AISLE','WINDOW','BILLING','ADDRESS','CONTACT',
+    'DETAILS','INFORMATION','SUMMARY','PASSAGEIRO','PASSAGEIRA','PARTIDA',
+    'CHEGADA','ASSENTO','PORTAO','DISPONIVEL','PENDENTE','INATIVO',
+  ]);
   let m4;
   while ((m4 = codeCtxRe.exec(text)) !== null) {
     const code = m4[1];
+    // Reject lowercase-start (i-flag makes [A-Z0-9] match lowercase — use case-sensitive test)
+    if (!/^[A-Z0-9]/.test(code)) continue;
+    // Reject mixed-case without digit (e.g. "Pasajero": starts uppercase but has lowercase, no digit)
+    if (!/\d/.test(code) && !/^[A-Z0-9]+$/.test(code)) continue;
+    // Reject common document-label words
+    if (_CODE_STOP.has(code.toUpperCase())) continue;
     const codeStart = m4.index + m4[0].length - code.length;
     spans.push({ start: codeStart, end: codeStart + code.length, type: 'CODIGO', score: 0.93 });
   }
@@ -1407,7 +1498,8 @@ async function extractText(file) {
       // else: identical to last non-empty line → skip (rendering layer duplicate)
     }
     // Collapse runs of 3+ blank lines to 2
-    const finalText = deduped.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+    // NFC-normalize: some PDFs emit decomposed (NFD) unicode which breaks character-class matching
+    const finalText = deduped.join('\n').replace(/\n{3,}/g, '\n\n').trim().normalize('NFC');
 
     return { text: finalText, format: 'pdf', buf, warning: 'PDF rasterizado — el texto redactado es eliminado por completo del archivo.' };
   }
@@ -1480,10 +1572,15 @@ function redactDocxXml(xmlStr, entityMap) {
     // Skip rPr inside pPr (paragraph mark properties); look for first run's rPr after </w:pPr>
     const afterPPr  = pPr ? pBody.slice(pBody.indexOf('</w:pPr>') + 8) : pBody;
     const firstRPr  = (afterPPr.match(/<w:rPr>[\s\S]*?<\/w:rPr>/) || [''])[0];
-    const escaped  = redacted.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    const spAttr   = /^\s|\s$/.test(redacted) ? ' xml:space="preserve"' : '';
+    const boldRPr   = firstRPr ? firstRPr.replace('</w:rPr>', '<w:b/></w:rPr>') : '<w:rPr><w:b/></w:rPr>';
+    const _xe       = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const _sp       = s => (/^\s|\s$/.test(s) ? ' xml:space="preserve"' : '');
+    const _isTok    = s => /^\[[A-Z_]+_\d+\]$/.test(s);
+    const runs      = redacted.split(/(\[[A-Z_]+_\d+\])/).filter(s => s).map(s =>
+      `<w:r>${_isTok(s) ? boldRPr : firstRPr}<w:t${_sp(s)}>${_xe(s)}</w:t></w:r>`
+    ).join('');
 
-    return `${prefix}${pOpen}${pPr}<w:r>${firstRPr}<w:t${spAttr}>${escaped}</w:t></w:r></w:p>`;
+    return `${prefix}${pOpen}${pPr}${runs}</w:p>`;
   }).join('');
 }
 
@@ -1601,12 +1698,18 @@ function textToDocxBytes(text) {
   // Strip XML-invalid control chars (keep tab \x09, LF \x0A, CR \x0D)
   text = text.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, '');
   const xe = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  const rpr = '<w:rPr><w:rFonts w:ascii="Courier New" w:hAnsi="Courier New" w:cs="Courier New"/><w:sz w:val="20"/></w:rPr>';
-  const paras = text.split('\n').map(line =>
-    line
-      ? `<w:p><w:r>${rpr}<w:t xml:space="preserve">${xe(line)}</w:t></w:r></w:p>`
-      : '<w:p/>'
-  ).join('');
+  const rpr     = '<w:rPr><w:rFonts w:ascii="Courier New" w:hAnsi="Courier New" w:cs="Courier New"/><w:sz w:val="20"/></w:rPr>';
+  const boldRpr = '<w:rPr><w:b/><w:rFonts w:ascii="Courier New" w:hAnsi="Courier New" w:cs="Courier New"/><w:sz w:val="20"/></w:rPr>';
+  const isTokFn = s => /^\[[A-Z_]+_\d+\]$/.test(s);
+  const spFn    = s => (/^\s|\s$/.test(s) ? ' xml:space="preserve"' : '');
+  const paras = text.split('\n').map(line => {
+    if (!line) return '<w:p/>';
+    const segs = line.split(/(\[[A-Z_]+_\d+\])/).filter(s => s);
+    const runs = segs.map(s =>
+      `<w:r>${isTokFn(s) ? boldRpr : rpr}<w:t${spFn(s)}>${xe(s)}</w:t></w:r>`
+    ).join('');
+    return `<w:p>${runs}</w:p>`;
+  }).join('');
   const WML = 'http://schemas.openxmlformats.org/wordprocessingml/2006/main';
   const REL = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships';
   const PKG = 'http://schemas.openxmlformats.org/package/2006';
@@ -1655,10 +1758,11 @@ async function buildRedactedFile(originalFile, redactedText, format, originalWb,
           const { text: rt } = applyRedactions(String(cell.v), mergeSpans(detectSpans(String(cell.v))), sid);
           cell.v = rt;
           if (cell.w) cell.w = rt;
+          if (/\[[A-Z_]+_\d+\]/.test(rt)) cell.s = { font: { bold: true } };
         }
       }
     }
-    const out = XLSX.write(wb, { type: 'array', bookType: 'xlsx' });
+    const out = XLSX.write(wb, { type: 'array', bookType: 'xlsx', cellStyles: true });
     return { bytes: new Uint8Array(out), filename: addSuffix(safeName, 'redacted'), mime: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' };
   }
 
@@ -1754,11 +1858,11 @@ const S = {
 // códigos de documento (RUT, CUIT, DNI…) son iguales en todos los idiomas
 const TYPE_LABELS = {
   es: { NOMBRE:'NOMBRE', TELEFONO:'TELEFONO', TARJETA:'TARJETA', CUENTA:'CUENTA',
-        RANGO:'RANGO',   DOMINIO:'DOMINIO',   CONF:'CONF',        SECRETO:'SECRETO', CODIGO:'CODIGO' },
+        RANGO:'RANGO',   DOMINIO:'DOMINIO',   CONF:'CONF',        SECRETO:'SECRETO', CODIGO:'CODIGO', ORGANIZACION:'EMPRESA' },
   en: { NOMBRE:'NAME',   TELEFONO:'PHONE',    TARJETA:'CARD',    CUENTA:'ACCOUNT',
-        RANGO:'RANGE',   DOMINIO:'DOMAIN',    CONF:'CUSTOM',      SECRETO:'SECRET',  CODIGO:'CODE' },
+        RANGO:'RANGE',   DOMINIO:'DOMAIN',    CONF:'CUSTOM',      SECRETO:'SECRET',  CODIGO:'CODE',   ORGANIZACION:'COMPANY' },
   pt: { NOMBRE:'NOME',   TELEFONO:'TELEFONE', TARJETA:'CARTAO',  CUENTA:'CONTA',
-        RANGO:'FAIXA',   DOMINIO:'DOMINIO',   CONF:'PERSONALIZADO', SECRETO:'SEGREDO', CODIGO:'CODIGO' },
+        RANGO:'FAIXA',   DOMINIO:'DOMINIO',   CONF:'PERSONALIZADO', SECRETO:'SEGREDO', CODIGO:'CODIGO', ORGANIZACION:'EMPRESA' },
 };
 // Retorna la etiqueta traducida del tipo interno; devuelve el tipo si no tiene traducción
 function tType(type) { return (TYPE_LABELS[_lang]?.[type]) ?? type; }
@@ -1771,6 +1875,7 @@ const TYPE_COLORS = {
   CI:'#fbbf24', NIF_ES:'#fbbf24', SSN:'#fbbf24', PASAPORTE:'#fbbf24',
   CBU:'#f9a8d4', CVU:'#f9a8d4', TARJETA:'#fca5a5',
   CUENTA:'#f9a8d4', CUENTA_BANCO:'#f9a8d4',
+  GPS:'#34d399',
   IP:'#6366f1', RANGO:'#818cf8', DOMINIO:'#60a5fa', URL:'#a5b4fc',
   LUGAR:'#4ade80', ORGANIZACION:'#fdba74', OTRO:'#f59e0b',
   FECHA:'#e9d5ff', WALLET:'#f0abfc', NIF:'#fbbf24',
