@@ -16,7 +16,7 @@
 <meta property="og:image:type"   content="image/png">
 <meta property="og:image:width"  content="1532">
 <meta property="og:image:height" content="430">
-<meta property="og:image:alt"    content="VELUM Lite — Redacción privada de datos sensibles para IA">
+<meta property="og:image:alt"    content="VELUM Lite - Redacción privada de datos sensibles para IA">
 <meta property="og:locale"       content="es_CL">
 
 <meta name="twitter:card"        content="summary_large_image">
@@ -24,7 +24,7 @@
 <meta name="twitter:title"       content="VELUM Lite · Redacción privada para IA">
 <meta name="twitter:description" content="Redacta IPs, dominios, emails y datos sensibles antes de compartir con un LLM. Procesamiento 100% local, ningún dato sale de tu equipo.">
 <meta name="twitter:image"       content="https://cronup.github.io/velum/velum.png">
-<meta name="twitter:image:alt"   content="VELUM Lite — Redacción privada de datos sensibles para IA">
+<meta name="twitter:image:alt"   content="VELUM Lite - Redacción privada de datos sensibles para IA">
 
 <link rel="canonical" href="https://cronup.github.io/velum/">
 
@@ -135,18 +135,18 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-ui);font-size
 .drop-text strong:hover{text-decoration-color:var(--accent)}
 .fmt-row{display:flex;justify-content:center;gap:4px;margin-top:12px;flex-wrap:wrap}
 .fmt{font-family:var(--font-mono);font-size:9px;letter-spacing:.08em;padding:2px 7px;border:1px solid var(--wire);color:var(--t3);font-weight:500}
-.file-row{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--s2);border:1px solid var(--edge);font-family:var(--font-mono);font-size:12px;color:var(--ok);min-width:0;overflow:hidden}
+.file-row{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--s2);border:1px solid var(--edge);font-family:var(--font-mono);font-size:11px;color:var(--ok);min-width:0;overflow:hidden}
 .file-row .file-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1}
 .file-row .rm{flex-shrink:0;background:none;border:none;color:var(--t2);cursor:pointer;font-size:14px;line-height:1;padding:0;transition:color .15s}
 .file-row .rm:hover{color:var(--err)}
 .or{display:flex;align-items:center;gap:12px;font-family:var(--font-mono);font-size:10px;color:var(--t3);letter-spacing:.1em}
 .or::before,.or::after{content:'';flex:1;height:1px;background:var(--edge)}
-textarea{width:100%;min-height:72px;background:var(--s2);border:1px solid var(--edge);color:var(--text);font-family:var(--font-mono);font-size:12px;line-height:1.8;padding:8px 14px;resize:vertical;outline:none;transition:border-color .15s;border-radius:0;-webkit-appearance:none}
+textarea{width:100%;min-height:72px;background:var(--s2);border:1px solid var(--edge);color:var(--text);font-family:var(--font-mono);font-size:11px;line-height:1.8;padding:8px 14px;resize:vertical;outline:none;transition:border-color .15s;border-radius:0;-webkit-appearance:none}
 textarea:focus{border-color:var(--accent)}
 textarea::placeholder{color:var(--t3)}
 .sid-row{display:flex;border:1px solid var(--edge);background:var(--s2)}
 .sid-label-cell{padding:8px 12px;background:var(--s1);border-right:1px solid var(--edge);font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--t2);white-space:nowrap;display:flex;align-items:center}
-.sid-row input{flex:1;background:transparent;border:none;outline:none;color:var(--accent);font-family:var(--font-mono);font-size:12px;padding:8px 12px;min-width:0}
+.sid-row input{flex:1;background:transparent;border:none;outline:none;color:var(--accent);font-family:var(--font-mono);font-size:11px;padding:8px 12px;min-width:0}
 .sid-row input::placeholder{color:var(--t3)}
 .sid-paste{padding:8px 12px;background:none;border:none;border-left:1px solid var(--edge);color:var(--t2);cursor:pointer;font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;transition:color .15s,background .15s}
 .sid-paste:hover{color:var(--text);background:var(--s3)}
@@ -163,9 +163,11 @@ textarea::placeholder{color:var(--t3)}
 
 /* ── Result viewer ── */
 .result-wrap{flex:1;display:flex;flex-direction:column;border:1px solid var(--edge);overflow:hidden;position:relative;min-height:0}
-.result-toolbar{display:flex;align-items:center;gap:8px;padding:5px 10px;background:var(--s1);border-bottom:1px solid var(--edge);flex-shrink:0;min-width:0}
-.result-toolbar-label{font-family:var(--font-mono);font-size:10px;color:var(--t2);letter-spacing:.06em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1}
-.result-toolbar .acts{margin-left:auto;display:flex;gap:4px;flex-shrink:0}
+.result-toolbar{display:flex;flex-direction:column;align-items:flex-start;gap:5px;padding:6px 10px;background:var(--s1);border-bottom:1px solid var(--edge);flex-shrink:0;min-width:0}
+.result-toolbar-label{font-family:var(--font-mono);font-size:10px;color:var(--t2);letter-spacing:.06em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:100%;transition:color .2s}
+.result-toolbar-label.active{color:var(--text);font-weight:500}
+.result-toolbar .acts{display:flex;gap:4px;flex-shrink:0}
+.result-toolbar .icon-btn{padding:2px 7px;font-size:10px}
 .icon-btn{background:none;border:none;color:var(--t2);cursor:pointer;padding:3px 8px;font-size:11px;font-family:var(--font-mono);letter-spacing:.05em;transition:color .15s;display:flex;align-items:center;gap:5px}
 .icon-btn:hover{color:var(--text)}
 .icon-btn.primary{color:var(--accent);background:var(--aD);border:1px solid var(--aM);border-radius:3px}
@@ -173,8 +175,8 @@ textarea::placeholder{color:var(--t3)}
 .result-body{flex:1;overflow-y:auto;background:var(--s2);display:flex;min-height:0}
 .line-nums{padding:12px 0;background:var(--s1);border-right:1px solid var(--edge);user-select:none;flex-shrink:0;min-width:42px;text-align:right}
 .line-num{display:block;padding:0 10px;font-family:var(--font-mono);font-size:11px;line-height:1.8;color:var(--t3)}
-.result-text{flex:1;padding:12px 16px;font-family:var(--font-mono);font-size:12px;line-height:1.8;color:var(--text);white-space:pre-wrap;word-break:break-word}
-.result-empty{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;color:var(--t3);font-family:var(--font-mono);font-size:12px;letter-spacing:.04em;padding:40px;text-align:center}
+.result-text{flex:1;padding:12px 16px;font-family:var(--font-mono);font-size:11px;line-height:1.8;color:var(--text);white-space:pre-wrap;word-break:break-word}
+.result-empty{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;color:var(--t3);font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;padding:40px;text-align:center}
 .empty-glyph{font-size:28px;opacity:.3}
 .tok{background:var(--aD);border:1px solid var(--aM);color:var(--accent);font-family:var(--font-mono);padding:0 5px;border-radius:2px;font-size:.93em;box-shadow:0 0 6px var(--aD);font-weight:700}
 
@@ -214,9 +216,10 @@ textarea::placeholder{color:var(--t3)}
 #panel-session{height:calc(100vh - 86px);overflow-y:auto}
 .session-panel{padding:32px;max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:24px}
 .session-heading{font-family:var(--font-brand);font-size:22px;font-weight:700;color:var(--text);letter-spacing:-.3px}
-.full-mapping-table{width:100%;border-collapse:collapse;font-family:var(--font-mono);font-size:12px}
+.full-mapping-table{width:100%;table-layout:fixed;border-collapse:collapse;font-family:var(--font-mono);font-size:11px}
 .full-mapping-table th{padding:8px 16px;text-align:left;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--t2);border-bottom:1px solid var(--wire);font-weight:500}
-.full-mapping-table td{padding:9px 16px;border-bottom:1px solid var(--edge);color:var(--t2)}
+.full-mapping-table th:first-child{width:160px}
+.full-mapping-table td{padding:9px 16px;border-bottom:1px solid var(--edge);color:var(--t2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .full-mapping-table td:first-child{color:var(--accent);font-weight:500}
 .full-mapping-table tr:hover td{background:var(--s2)}
 .full-mapping-wrap{border:1px solid var(--edge);overflow:hidden}
@@ -231,7 +234,7 @@ textarea::placeholder{color:var(--t3)}
 .cw-toggle:hover{color:var(--text)}
 .cw-opt{color:var(--t3);font-size:9px;letter-spacing:.08em}
 .cw-row{display:flex;gap:6px;margin-top:8px}
-.cw-row input{flex:1;background:var(--s2);border:1px solid var(--edge);color:var(--text);font-family:var(--font-mono);font-size:12px;padding:7px 10px;outline:none;transition:border-color .15s;min-width:0}
+.cw-row input{flex:1;background:var(--s2);border:1px solid var(--edge);color:var(--text);font-family:var(--font-mono);font-size:11px;padding:7px 10px;outline:none;transition:border-color .15s;min-width:0}
 .cw-row input:focus{border-color:var(--accent)}
 .cw-row input::placeholder{color:var(--t3)}
 .cw-add{padding:7px 12px;background:var(--s2);border:1px solid var(--edge);color:var(--t2);cursor:pointer;font-family:var(--font-mono);font-size:13px;font-weight:600;transition:color .15s,border-color .15s;flex-shrink:0}
@@ -242,14 +245,17 @@ textarea::placeholder{color:var(--t3)}
 .cw-tag button:hover{color:var(--err)}
 
 /* ── CronUp footer bar ── */
-.cronup-bar{display:flex;flex-direction:column;gap:3px;padding:6px 24px;background:var(--s1);border-top:1px solid var(--edge);font-family:var(--font-mono);font-size:10px;color:var(--t3);letter-spacing:.04em;position:fixed;bottom:0;left:0;right:0;z-index:100}
-.cronup-top{display:flex;align-items:center;gap:8px}
-.cronup-link{display:flex;align-items:center;gap:6px;color:var(--accent);text-decoration:none;font-weight:500;white-space:nowrap;transition:opacity .15s}
+.cronup-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 16px;background:var(--s1);border-top:1px solid var(--edge);font-family:var(--font-mono);font-size:11px;color:var(--t3);letter-spacing:.04em;position:fixed;bottom:0;left:0;right:0;z-index:100}
+.cronup-link{display:flex;align-items:center;gap:6px;color:var(--accent);text-decoration:none;font-weight:500;white-space:nowrap;transition:opacity .15s;font-size:11px}
 .cronup-link:hover{opacity:.75}
-.cronup-sep{color:var(--t4)}
-.cronup-note{color:var(--t3);font-size:9px}
+/* ── Trust chips ── */
+.trust-chips{display:flex;align-items:center;gap:4px}
+.trust-chip{display:inline-flex;align-items:center;gap:4px;padding:2px 7px 2px 5px;border-radius:10px;background:var(--s2);border:1px solid var(--edge);font-family:var(--font-mono);font-size:9px;color:var(--t2);letter-spacing:.04em;white-space:nowrap;cursor:default;transition:border-color .15s,color .15s;-webkit-appearance:none;line-height:1.4}
+.trust-chip:hover{border-color:var(--wire);color:var(--text)}
+button.trust-chip{cursor:pointer}
+button.trust-chip:hover{border-color:rgba(72,128,255,.45);color:var(--accent)}
 /* Compensate for fixed footer height */
-body{padding-bottom:52px}
+body{padding-bottom:38px}
 
 .hidden{display:none!important}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.brand-cursor{animation:none}}
@@ -276,12 +282,10 @@ body{padding-bottom:52px}
   .nav-btn{padding:14px 20px;font-size:13px;text-align:left;border-bottom:none!important;border-left:3px solid transparent;margin-bottom:0;letter-spacing:.04em}
   .nav-btn.on{border-left-color:var(--accent);color:var(--accent)}
   .sid-row{flex-wrap:wrap;gap:6px}
-  .sid-row input{min-width:0;flex:1;font-size:11px}
   .result-toolbar{flex-wrap:wrap;gap:6px}
   .acts{flex-wrap:wrap;gap:4px}
   .btn{font-size:13px;padding:10px 16px}
   .cw-tag{font-size:11px}
-  textarea{font-size:11px}
   .workspace .pane:first-child .pane-body{overflow:hidden}
   .workspace .pane:first-child textarea{flex:1;min-height:60px;resize:none;overflow-y:auto}
   .line-num{font-size:9px;line-height:1.5}
@@ -354,7 +358,7 @@ body{padding-bottom:52px}
         <li id="privHow1">El texto y archivos se procesan directamente en tu navegador.</li>
         <li id="privHow2">Los tokens de reemplazo se generan y mapean localmente (localStorage).</li>
         <li id="privHow3">Ningún dato es enviado a servidores, APIs externas ni terceros.</li>
-        <li id="privHow4">Tu archivo nunca abandona el dispositivo — ni en tránsito ni en reposo.</li>
+        <li id="privHow4">Tu archivo nunca abandona el dispositivo - ni en tránsito ni en reposo.</li>
       </ul>
     </div>
 
@@ -382,15 +386,42 @@ body{padding-bottom:52px}
 
 <!-- ── CronUp footer ── -->
 <div class="cronup-bar">
-  <div class="cronup-top">
-    <a href="https://www.cronup.com" target="_blank" rel="noopener" class="cronup-link">Powered by CronUp Ciberseguridad</a>
-    <span class="cronup-sep">|</span>
-    <a href="https://github.com/CronUp/velum" target="_blank" rel="noopener" class="cronup-link" style="gap:4px">
-      <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="flex-shrink:0"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.744 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
-      Source
-    </a>
+  <a href="https://www.cronup.com" target="_blank" rel="noopener" class="cronup-link">Powered by CronUp Ciberseguridad</a>
+  <div class="trust-chips">
+    <button class="trust-chip chip-priv" id="chipPriv" tabindex="0" onclick="openPrivacyModal()" onkeydown="if(event.key==='Enter'||event.key===' ')openPrivacyModal()">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 3L4 6v6c0 5.5 3.8 10.7 8 12 4.2-1.3 8-6.5 8-12V6L12 3z"
+              stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/>
+        <polyline points="9,12 11,14 15,10" stroke="currentColor" stroke-width="1.9"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span id="chip-local">100% local</span>
+    </button>
+    <div class="trust-chip" id="chipFmt">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="4" y="2" width="11" height="15" rx="1.5" stroke="currentColor" stroke-width="1.8"/>
+        <polyline points="15,2 20,7 20,20 9,20 9,17" stroke="currentColor" stroke-width="1.8"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="7" y1="8"  x2="12" y2="8"  stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        <line x1="7" y1="11" x2="12" y2="11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+      <span id="chip-fmt">PDF · Word · Excel</span>
+    </div>
+    <div class="trust-chip" id="chipLLM">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="2.5" stroke="currentColor" stroke-width="1.8"/>
+        <circle cx="4"  cy="6"  r="2"   stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="20" cy="6"  r="2"   stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="4"  cy="18" r="2"   stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="20" cy="18" r="2"   stroke="currentColor" stroke-width="1.5"/>
+        <line x1="5.4" y1="7.2"  x2="10.5" y2="10.5" stroke="currentColor" stroke-width="1.3"/>
+        <line x1="18.6" y1="7.2" x2="13.5" y2="10.5" stroke="currentColor" stroke-width="1.3"/>
+        <line x1="5.4" y1="16.8" x2="10.5" y2="13.5" stroke="currentColor" stroke-width="1.3"/>
+        <line x1="18.6" y1="16.8" x2="13.5" y2="13.5" stroke="currentColor" stroke-width="1.3"/>
+      </svg>
+      <span id="chip-llm">15 LLMs</span>
+    </div>
   </div>
-  <span class="cronup-note" id="cronup-note">Todo el proceso ocurre en tu navegador. 100% local</span>
 </div>
 
 <!-- ═══ PANEL: REDACTAR ═══ -->
@@ -422,7 +453,7 @@ body{padding-bottom:52px}
           <button class="rm" onclick="clearFile('redact')">✕</button>
         </div>
         <div class="or"><span id="lbl-or2">O</span></div>
-        <textarea id="textR" placeholder="Pega texto con datos sensibles: nombres, RUT, CUIT, emails, teléfonos, IPs, dominios, tarjetas…"></textarea>
+        <textarea id="textR" placeholder="Pega texto con datos sensibles: nombres, RUT, CUIT, emails, teléfonos, IPs, dominios, tarjetas…" style="min-height:120px;height:120px"></textarea>
         <button class="cw-toggle" id="cwToggle" onclick="toggleCW()">
           <span id="cwArrow">▸</span> <span id="lbl-cw">Palabras adicionales</span> <span class="cw-opt" id="lbl-cw-opt">opcional</span>
         </button>
@@ -448,12 +479,12 @@ body{padding-bottom:52px}
       <div class="pane-body" id="outBodyR" style="overflow:hidden">
         <div id="manifestR" class="manifest hidden">
           <div class="manifest-hdr">
-            <span class="manifest-title">Inventario de datos detectados</span>
+            <span class="manifest-title" id="lbl-manifest-title">Inventario de datos detectados</span>
             <span class="manifest-count" id="mCountR">0</span>
           </div>
           <div class="manifest-wrap">
             <table class="manifest-table">
-              <thead><tr><th>Token</th><th>Tipo</th><th>Valor original</th></tr></thead>
+              <thead><tr><th id="th-m-token">Token</th><th id="th-m-type">Tipo</th><th id="th-m-orig">Valor original</th></tr></thead>
               <tbody id="mBodyR"></tbody>
             </table>
           </div>
@@ -473,6 +504,7 @@ body{padding-bottom:52px}
           <div class="result-toolbar">
             <span class="result-toolbar-label" id="viewerLabelR">resultado</span>
             <div class="acts">
+              <button class="icon-btn primary" id="clearAllBtn" onclick="clearAll()" style="display:none">↺ Limpiar</button>
               <button class="icon-btn primary" id="copyBtnR" onclick="copyResult('R')" style="display:none">⧉ Copiar</button>
               <button class="icon-btn primary" id="dlBtnR"   onclick="dlResult('R')"   style="display:none">↓ Descargar</button>
             </div>
@@ -521,7 +553,7 @@ body{padding-bottom:52px}
           <input type="text" id="sidInput" placeholder="ID de sesión…">
           <button class="sid-paste" id="btn-paste" onclick="pasteSid()">Pegar</button>
         </div>
-        <textarea id="textRR" placeholder="Pega la respuesta de la IA/LLM aquí. Los tokens [NOMBRE_1], [EMAIL_1], etc. serán reemplazados."></textarea>
+        <textarea id="textRR" placeholder="Pega la respuesta de la IA/LLM aquí. Los tokens [NOMBRE_1], [EMAIL_1], etc. serán reemplazados." style="min-height:120px;height:120px"></textarea>
         <button class="btn btn-primary" id="btnRR" onclick="doRestore()">
           <span id="btnRRIcon">↑</span>
           <span id="btnRRText">Restaurar Datos Originales</span>
@@ -623,22 +655,27 @@ const STR = {
     lbl_ai_resp:'Respuesta de la IA/LLM', lbl_sid_label:'Sesión', btn_paste:'Pegar',
     lbl_restored_pane:'Resultado restaurado', lbl_restored_tag:'restaurado',
     empty_restored:'El resultado restaurado aparecerá aquí',
-    lbl_cw:'Palabras adicionales', lbl_cw_opt:'opcional',
+    lbl_cw:'Palabras específicas', lbl_cw_opt:'opcional',
+    lbl_text_redacted:'TEXTO REDACTADO', lbl_result_idle:'resultado',
     btn_copy_icon:'⧉ Copiar', btn_dl_icon:'↓ Descargar',
     sess_heading:'Mapa de sesión',
     sess_desc:'Correspondencia entre tokens y valores originales. Guardada en <strong>localStorage</strong> de este navegador. Se pierde si limpias el sitio. Sin envío externo.',
     sess_empty:'No hay datos redactados en esta sesión. Comienza en la pestaña <strong>Redactar</strong>.',
     sess_warn:'Este mapa contiene los valores originales. No lo compartas ni lo subas a ningún servicio externo.',
-    th_token:'Token', th_original:'Valor original',
+    th_token:'Token', th_type:'Tipo', th_original:'Valor original',
+    lbl_manifest_title:'Inventario de datos detectados',
     btn_dl_map:'⬇ Descargar mapping.json', btn_clear_sess:'Limpiar sesión',
-    footer_note:'Todo el proceso ocurre en tu navegador. 100% local',
+    chip_local:'100% local', chip_fmt:'PDF · Word · Excel', chip_llm:'15 LLMs',
+    chip_local_tip:'Todo el proceso ocurre en tu navegador. Sin envío externo.',
+    chip_fmt_tip:'Soporta texto plano, PDF, Word, Excel, CSV y más formatos',
+    chip_llm_tip:'Compatible con ChatGPT, Claude, Gemini, Copilot, Grok, DeepSeek y más',
     priv_title:'Privacidad 100% local',
     priv_sub:'Todo el procesamiento ocurre en tu navegador. Ningún dato sale de tu equipo.',
     priv_how_title:'Cómo funciona',
     priv_how_1:'El texto y archivos se procesan directamente en tu navegador.',
     priv_how_2:'Los tokens de reemplazo se generan y mapean localmente (localStorage).',
     priv_how_3:'Ningún dato es enviado a servidores, APIs externas ni terceros.',
-    priv_how_4:'Tu archivo nunca abandona el dispositivo — ni en tránsito ni en reposo.',
+    priv_how_4:'Tu archivo nunca abandona el dispositivo - ni en tránsito ni en reposo.',
     priv_why_title:'¿Por qué VELUM Lite?',
     priv_why_1:'Comparte contexto con IAs sin exponer datos sensibles.',
     priv_why_2:'Compatible con texto, PDF, Word, Excel y hojas de cálculo.',
@@ -670,14 +707,20 @@ const STR = {
     lbl_ai_resp:'AI/LLM Response', lbl_sid_label:'Session', btn_paste:'Paste',
     lbl_restored_pane:'Restored Result', lbl_restored_tag:'restored',
     empty_restored:'Restored result will appear here',
-    lbl_cw:'Additional words', lbl_cw_opt:'optional',
+    lbl_cw:'Specific words', lbl_cw_opt:'optional',
+    lbl_text_redacted:'REDACTED TEXT', lbl_result_idle:'result',
     btn_copy_icon:'⧉ Copy', btn_dl_icon:'↓ Download',
     sess_heading:'Session Map',
     sess_desc:'Mapping between tokens and original values. Stored in this browser\'s <strong>localStorage</strong>. Lost if you clear site data. No external transmission.',
     sess_empty:'No redacted data in this session. Start in the <strong>Redact</strong> tab.',
     sess_warn:'This map contains original values. Do not share or upload it to any external service.',
-    th_token:'Token', th_original:'Original value',
+    th_token:'Token', th_type:'Type', th_original:'Original value',
+    lbl_manifest_title:'Detected data inventory',
     btn_dl_map:'⬇ Download mapping.json', btn_clear_sess:'Clear session',
+    chip_local:'100% local', chip_fmt:'PDF · Word · Excel', chip_llm:'15 LLMs',
+    chip_local_tip:'All processing runs in your browser. No external transmission.',
+    chip_fmt_tip:'Supports plain text, PDF, Word, Excel, CSV and more',
+    chip_llm_tip:'Compatible with ChatGPT, Claude, Gemini, Copilot, Grok, DeepSeek and more',
     footer_note:'All processing happens in your browser. 100% local',
     priv_title:'100% Local Privacy',
     priv_sub:'All processing happens in your browser. No data ever leaves your device.',
@@ -685,7 +728,7 @@ const STR = {
     priv_how_1:'Text and files are processed directly in your browser.',
     priv_how_2:'Replacement tokens are generated and mapped locally (localStorage).',
     priv_how_3:'No data is sent to servers, external APIs, or third parties.',
-    priv_how_4:'Your file never leaves the device — not in transit, not at rest.',
+    priv_how_4:'Your file never leaves the device - not in transit, not at rest.',
     priv_why_title:'Why VELUM Lite?',
     priv_why_1:'Share context with AI without exposing sensitive data.',
     priv_why_2:'Works with text, PDF, Word, Excel and spreadsheets.',
@@ -717,14 +760,20 @@ const STR = {
     lbl_ai_resp:'Resposta da IA/LLM', lbl_sid_label:'Sessão', btn_paste:'Colar',
     lbl_restored_pane:'Resultado restaurado', lbl_restored_tag:'restaurado',
     empty_restored:'O resultado restaurado aparecerá aqui',
-    lbl_cw:'Palavras adicionais', lbl_cw_opt:'opcional',
+    lbl_cw:'Palavras específicas', lbl_cw_opt:'opcional',
+    lbl_text_redacted:'TEXTO REDIGIDO', lbl_result_idle:'resultado',
     btn_copy_icon:'⧉ Copiar', btn_dl_icon:'↓ Baixar',
     sess_heading:'Mapa de sessão',
     sess_desc:'Correspondência entre tokens e valores originais. Salvo no <strong>localStorage</strong> deste navegador. Perdido se limpar os dados do site. Sem envio externo.',
     sess_empty:'Nenhum dado redigido nesta sessão. Comece na aba <strong>Redigir</strong>.',
     sess_warn:'Este mapa contém os valores originais. Não o compartilhe nem envie a nenhum serviço externo.',
-    th_token:'Token', th_original:'Valor original',
+    th_token:'Token', th_type:'Tipo', th_original:'Valor original',
+    lbl_manifest_title:'Inventário de dados detectados',
     btn_dl_map:'⬇ Baixar mapping.json', btn_clear_sess:'Limpar sessão',
+    chip_local:'100% local', chip_fmt:'PDF · Word · Excel', chip_llm:'15 LLMs',
+    chip_local_tip:'Todo o processo ocorre no seu navegador. Sem envio externo.',
+    chip_fmt_tip:'Suporta texto, PDF, Word, Excel, CSV e mais formatos',
+    chip_llm_tip:'Compatível com ChatGPT, Claude, Gemini, Copilot, Grok, DeepSeek e mais',
     footer_note:'Todo o processo ocorre no seu navegador. 100% local',
     priv_title:'Privacidade 100% local',
     priv_sub:'Todo o processamento ocorre no seu navegador. Nenhum dado sai do seu dispositivo.',
@@ -732,7 +781,7 @@ const STR = {
     priv_how_1:'O texto e os arquivos são processados diretamente no seu navegador.',
     priv_how_2:'Os tokens de substituição são gerados e mapeados localmente (localStorage).',
     priv_how_3:'Nenhum dado é enviado a servidores, APIs externas ou terceiros.',
-    priv_how_4:'O arquivo nunca sai do dispositivo — nem em trânsito, nem em repouso.',
+    priv_how_4:'O arquivo nunca sai do dispositivo - nem em trânsito, nem em repouso.',
     priv_why_title:'Por que VELUM Lite?',
     priv_why_1:'Compartilhe contexto com IAs sem expor dados sensíveis.',
     priv_why_2:'Compatível com texto, PDF, Word, Excel e planilhas.',
@@ -794,13 +843,23 @@ function applyLang() {
   el('lbl-sess-warn').textContent  = T('sess_warn');
   el('th-token').textContent       = T('th_token');
   el('th-original').textContent    = T('th_original');
+  // Manifest table (redact panel)
+  if (el('lbl-manifest-title')) el('lbl-manifest-title').textContent = T('lbl_manifest_title');
+  if (el('th-m-token'))  el('th-m-token').textContent  = T('th_token');
+  if (el('th-m-type'))   el('th-m-type').textContent   = T('th_type');
+  if (el('th-m-orig'))   el('th-m-orig').textContent   = T('th_original');
   el('btn-dl-map').textContent     = T('btn_dl_map');
   el('btn-clear-sess').textContent = T('btn_clear_sess');
   // Custom words label
   el('lbl-cw').textContent         = T('lbl_cw');
   el('lbl-cw-opt').textContent     = T('lbl_cw_opt');
-  // Footer note (NOT the brand link — stays fixed)
-  el('cronup-note').textContent    = T('footer_note');
+  // Footer trust chips
+  if (el('chip-local')) el('chip-local').textContent = T('chip_local');
+  if (el('chip-fmt'))   el('chip-fmt').textContent   = T('chip_fmt');
+  if (el('chip-llm'))   el('chip-llm').textContent   = T('chip_llm');
+  if (el('chipPriv'))   el('chipPriv').title          = T('chip_local_tip');
+  if (el('chipFmt'))    el('chipFmt').title           = T('chip_fmt_tip');
+  if (el('chipLLM'))    el('chipLLM').title           = T('chip_llm_tip');
   // Privacy modal
   [['privTitle','priv_title'],['privSub','priv_sub'],
    ['privHowTitle','priv_how_title'],['privHow1','priv_how_1'],['privHow2','priv_how_2'],
@@ -835,7 +894,7 @@ const PATTERNS = [
   // SSH/PGP private key blocks (match full block; [^-] avoids re-matching delimiter)
   ['SECRETO', /-----BEGIN (?:[A-Z]+ )?PRIVATE KEY-----[^-]{20,8000}-----END (?:[A-Z]+ )?PRIVATE KEY-----/g, 0.99],
   ['SECRETO', /-----BEGIN PGP PRIVATE KEY BLOCK-----[^-]{20,8000}-----END PGP PRIVATE KEY BLOCK-----/g,     0.99],
-  // JWT (header.payload.signature — all three parts must be present)
+  // JWT (header.payload.signature - all three parts must be present)
   ['SECRETO', /\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b/g, 0.97],
   // AWS Access Key ID (AKIA prefix family)
   ['SECRETO', /\b(?:AKIA|ASIA|AROA|AIDA|AGPA|AIPA|ANPA|ANVA|APTA)[A-Z0-9]{16}\b/g, 0.99],
@@ -863,7 +922,7 @@ const PATTERNS = [
   ['SECRETO', /\bxoxb-[0-9]{10,}-[0-9]{10,}-[A-Za-z0-9]{24,}\b/g, 0.99],
   ['SECRETO', /\bxoxp-[0-9]{10,}-[0-9]{10,}-[0-9]{10,}-[A-Za-z0-9]{32,}\b/g, 0.99],
   ['SECRETO', /\bxox[as]-[A-Za-z0-9-]{10,}\b/g, 0.96],
-  // OpenAI — project key first (longer prefix, more specific)
+  // OpenAI - project key first (longer prefix, more specific)
   ['SECRETO', /\bsk-proj-[A-Za-z0-9_-]{48,}\b/g, 0.98],
   ['SECRETO', /\bsk-[A-Za-z0-9]{48}\b/g,          0.96],
   // Anthropic
@@ -893,7 +952,7 @@ const PATTERNS = [
   ['SECRETO', /(?:DATADOG_API_KEY|DD_API_KEY)\s*[=:]\s*[a-f0-9]{32}\b/gi, 0.93],
   // Generic .env / config secrets: ALLCAPS_NAME=longvalue
   ['SECRETO', /(?:[A-Z][A-Z0-9_]{2,}_)?(?:API_KEY|SECRET|TOKEN|PASSWORD|PRIVATE_KEY|CLIENT_SECRET|ACCESS_KEY|AUTH_KEY|AUTH_TOKEN|CREDENTIAL)\s*=\s*[^\s#"']{16,}/g, 0.80],
-  // JSON "key":"hex" where key implies identifier/hash — "machine_id":"4060a402c0dc..."
+  // JSON "key":"hex" where key implies identifier/hash - "machine_id":"4060a402c0dc..."
   ['SECRETO', /"[^"\r\n]{0,80}(?:_id|_key|_token|_hash|_mac|_secret|machine|device|session|fingerprint|serial|commit|build)[^"\r\n]{0,20}"\s*:\s*"[0-9a-fA-F]{24,128}"/gi, 0.93],
   // Standalone hex digests at canonical hash lengths (SHA-256: 64h, SHA-1: 40h, MD5/machine-id: 32h)
   ['SECRETO', /\b[0-9a-f]{64}\b/g, 0.85],
@@ -919,7 +978,7 @@ const PATTERNS = [
   ['CODIGO', /\b(?:[A-Z]{1,3}\d{3,5}|\d{3,5}[A-Z]{1,3})\b/g, 0.76],
   // 5. PNR-style localizador: 6-8 uppercase consonants with no vowels (KRTMBN · XKJFML)
   ['CODIGO', /\b[BCDFGHJKLMNPQRSTVWXYZ]{6,8}\b/g, 0.80],
-  // GPS coordinates: decimal degrees pair, ≥4 decimal places each — "12.3456, -98.7654"
+  // GPS coordinates: decimal degrees pair, ≥4 decimal places each - "12.3456, -98.7654"
   // Lookbehind/ahead prevent matching within larger numbers; ≥4 decimals avoids prices/versions
   ['GPS', /(?<![.\d])-?\d{1,3}\.\d{4,},\s*-?\d{1,3}\.\d{4,}(?![.\d])/g, 0.88],
   // UUID: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
@@ -930,7 +989,7 @@ const PATTERNS = [
   // CIDR before bare IP
   ['RANGO',   /\b(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\/(?:[12]\d|3[0-2]|\d)\b/g, 0.93],
   ['IP',      /\b(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\b/g, 0.96],
-  ['DOMINIO', /\b(?:[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+(?:com|net|org|io|top|xyz|onl|app|dev|ai|cl|ar|mx|co|pe|uy|ve|es|info|biz|edu|gob|gov|bo|py|ec|gt|sv|hn|ni|cr|pa|do|cu|pr|my|sg|id|ph|jp|kr|au|de|fr|it|br|us)\b/g, 0.75],
+  ['DOMINIO', /\b(?:[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+(?:local|internal|corp|lan|intranet|localdomain|home|priv|private|ad|mgmt|dmz|test|example|invalid|com|net|org|info|biz|edu|gov|gob|mil|int|name|pro|mobi|travel|museum|coop|aero|tel|post|xxx|io|app|dev|ai|cloud|tech|online|store|shop|site|web|blog|media|news|digital|email|live|click|link|stream|video|network|solutions|systems|services|support|hosting|security|global|group|team|studio|design|space|zone|hub|lab|finance|bank|pay|crypto|health|care|legal|law|agency|marketing|consulting|business|company|enterprise|social|top|xyz|onl|club|wiki|chat|games|press|works|world|page|ninja|us|ca|mx|br|ar|cl|co|pe|uy|ve|bo|py|ec|gt|sv|hn|ni|cr|pa|do|cu|pr|bz|gy|ht|jm|tt|bb|lc|vc|gd|ag|dm|kn|aw|tc|bm|gl|fk|uk|de|fr|it|es|pt|nl|be|ch|at|se|no|dk|fi|pl|ru|ua|cz|sk|hu|ro|bg|hr|si|rs|ba|me|mk|al|md|by|lt|lv|ee|is|ie|mt|cy|lu|li|mc|sm|va|fo|gg|je|im|gi|ax|jp|kr|cn|tw|hk|sg|my|id|ph|th|vn|mm|kh|la|bn|in|pk|bd|lk|np|bt|mv|af|ir|iq|sy|lb|jo|il|ps|tr|az|am|ge|kz|uz|tm|kg|tj|mn|mo|au|nz|pw|fj|pg|sb|vu|ws|to|tv|nr|ki|ck|nu|tk|ae|sa|qa|kw|bh|om|ye|za|ng|ke|gh|eg|ma|tn|dz|ly|et|tz|ug|rw|cm|ci|sn|ml|ne|gn|sl|lr|mr|gm|cv|bj|tg|ga|cd|ao|zm|zw|mw|mz|mg|mu|sc|dj|so|er|bi|na|bw|ls|sz)\b/gi, 0.75],
   // Credit cards
   ['TARJETA', /\b4\d{3}[\s\-]?\d{4}[\s\-]?\d{4}[\s\-]?\d{4}\b/g,         0.95],
   ['TARJETA', /\b5[1-5]\d{2}[\s\-]?\d{4}[\s\-]?\d{4}[\s\-]?\d{4}\b/g,    0.95],
@@ -945,7 +1004,8 @@ const PATTERNS = [
   ['WALLET',  /\b(?:[13][a-km-zA-HJ-NP-Z1-9]{25,34}|0x[a-fA-F0-9]{40}|(?:bc|tb|ltc)1[a-z0-9]{25,87})\b/g, 0.88],
   // Company/organization name + legal entity suffix (LATAM · US · EU)
   // "EMPRESA S.A." · "AEROLINEA SPA" · "BANCO REGIONAL S.A." · "ASEGURADORA SAS"
-  ['ORGANIZACION', /\b[A-ZÁÉÍÓÚÑÜ][A-Za-záéíóúñü0-9&._'-]*(?:\s+(?:(?:de|del|y|do|da|dos|das|and|of)\s+)?[A-ZÁÉÍÓÚÑÜ][A-Za-záéíóúñü0-9&._'-]*){0,4}\s+(?:S\.A\.(?:\s+de\s+C\.V\.)?|S\/A|SpA|SPA|S\.P\.A\.|S\.R\.L\.?|SRL|S\.A\.S\.?|S\.A\.C\.?|S\.A\.A\.|E\.I\.R\.L\.?|EIRL|EIRELI|Ltda?\.?|LTDA|LLC|LLP|Inc\.?|Corp\.?|Ltd\.?|PLC|GmbH|A\.G\.|B\.V\.|N\.V\.)(?!\w)/g, 0.87],
+  // First word requires ≥2 chars to avoid single-letter RUT check digits (e.g. "K" in "77053299-K") stealing the match
+  ['ORGANIZACION', /\b[A-ZÁÉÍÓÚÑÜ][A-Za-záéíóúñü0-9&._'-]+(?:\s+(?:(?:de|del|y|do|da|dos|das|and|of)\s+)?[A-ZÁÉÍÓÚÑÜ][A-Za-záéíóúñü0-9&._'-]*){0,4}\s+(?:S\.A\.(?:\s+de\s+C\.V\.)?|S\/A|SpA|SPA|S\.P\.A\.|S\.R\.L\.?|SRL|S\.A\.S\.?|S\.A\.C\.?|S\.A\.A\.|E\.I\.R\.L\.?|EIRL|EIRELI|Ltda?\.?|LTDA|LLC|LLP|Inc\.?|Corp\.?|Ltd\.?|PLC|GmbH|A\.G\.|B\.V\.|N\.V\.)(?!\w)/g, 0.87],
   // Company names that begin with a corporate prefix word (no suffix required)
   // "Empresas Alfa" · "Empresas Seguros Beta" · "Banco Regional" · "Holding XYZ" · "Constructora Delta"
   ['ORGANIZACION', /\b(?:Empresas?|Corporaci[oó]n|Holding|Banco|Seguros|Constructora|Inmobiliaria|Distribuidora|Comercializadora|Fundaci[oó]n|Cooperativa|Consultora|Aseguradora|Reaseguradora|Financiera|Arrendadora|Importadora|Exportadora)\s+(?:(?:de|del|los?|las?|el|la)\s+)?[A-ZÁÉÍÓÚÑÜ][A-Za-záéíóúñü0-9&._'-]{2,}(?:\s+(?:(?:de|del|y|do|da|and|of)\s+)?[A-ZÁÉÍÓÚÑÜ][A-Za-záéíóúñü0-9&._'-]*){0,3}/g, 0.78],
@@ -953,9 +1013,12 @@ const PATTERNS = [
   ['TELEFONO',/\+\d{1,3}[\s.\-]\(?\d{1,4}\)?[\s.\-]?\d{2,4}[\s.\-]?\d{3,5}\b/g, 0.92],
   ['TELEFONO',/\(\d{2,4}\)\s?\d{3,5}[\s.\-]\d{3,5}\b/g,                   0.88],
   ['TELEFONO',/\b\d{2,4}[\-\.]\d{3,5}[\-\.]\d{3,5}\b/g,                   0.80],
-  // Chilean RUT
+  // Chilean RUT  (con/sin puntos, con/sin guión; dígito verificador: 0-9 o K/k)
   ['RUT',     /\b\d{1,2}\.\d{3}\.\d{3}-[\dkK]\b/g,                        0.98],
-  ['RUT',     /(?<!\d)\d{7,8}-[\dkK](?!\w)/g,                             0.88],
+  ['RUT',     /\b\d{1,2}\.\d{3}\.\d{3}[kK]\b/g,                           0.95],
+  ['RUT',     /\b\d{7,8}-[\dkK]\b/g,                                      0.88],
+  ['RUT',     /\b\d{7,8}[kK]\b/g,                                         0.85],
+  ['RUT',     /\bR(?:UN|UT)\s*[:·#.]?\s*\d{6,8}(?:-?[\dkK])?\b/gi,       0.92],
   // Argentine CUIT/CUIL
   ['CUIT',    /\b(?:20|23|24|25|26|27|30|33|34)-\d{8}-\d\b/g,              0.98],
   ['CUIT',    /\b(?:20|23|24|25|26|27|30|33|34)\d{9}\b/g,                  0.82],
@@ -1176,7 +1239,7 @@ function _normStr(s){ return s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCa
 const PAIR_RE = /\b([A-ZÁÉÍÓÚÑÜ][a-záéíóúñü]{4,})\s+([A-ZÁÉÍÓÚÑÜ][a-záéíóúñü]{4,})\b/g;
 // ALL CAPS sequences of 2-4 words ≥ 3 chars each (e.g. NOMBRE APELLIDO SEGUNDO APELLIDO)
 const CAPS_NAME_RE = /\b[A-ZÁÉÍÓÚÑÜ]{3,}(?:\s+[A-ZÁÉÍÓÚÑÜ]{3,}){1,3}\b/g;
-// Sufijos de sustantivos abstractos y verbos — nunca son nombres propios
+// Sufijos de sustantivos abstractos y verbos - nunca son nombres propios
 const _NOT_NAME_SUFFIX = /(?:ción|ciones|sión|siones|idad|idades|miento|mientos|amiento|imientos|ancia|encias|anza|anzas|mente|ismo|ista|ables|ibles|ador|adora|ores|ando|endo|ificar|izado|izados|izar|itud|itudes|itar|ular|onal|eral|ados|adas|ivas|ivos|ção|ções|ção|dade|dades|mento|mentos|ância|ências|ança|mente|ismo|ável|icar|izado|izar|itude|itudes|itar|ção|ção|ment|ness|tion|sion|tion|ance|ence|ings|ized|izer|izing|ator|ators|ation|ations|ality|ities|ible|ables|ishes|ifies|ifier)$/i;
 // Normalized NOT_NAMES for ALL CAPS comparisons
 const _NOT_NAMES_NORM = new Set([...NOT_NAMES].map(_normStr));
@@ -1211,7 +1274,7 @@ function detectSpans(text) {
     const nameMatch = m2[1];
     const words = nameMatch.trim().split(/\s+/);
     const n0 = _normStr(words[0]);
-    // Require first word in known-name lists — prevents document nouns from slipping through
+    // Require first word in known-name lists - prevents document nouns from slipping through
     if (!KNOWN_FORENAMES.has(n0) && !KNOWN_SURNAMES.has(n0)) continue;
     // Reject if any word is a known non-name or has an abstract-noun/verb suffix
     if (words.some(w => NOT_NAMES.has(w) || _NOT_NAME_SUFFIX.test(w))) continue;
@@ -1235,7 +1298,7 @@ function detectSpans(text) {
     }
   }
 
-  // Short first-name pairs: "Ana López", "Luis Torres" — first word 2-4 chars, both in known lists
+  // Short first-name pairs: "Ana López", "Luis Torres" - first word 2-4 chars, both in known lists
   const shortPairRe = new RegExp(/\b([A-ZÁÉÍÓÚÑÜ][a-záéíóúñü]{1,3})\s+([A-ZÁÉÍÓÚÑÜ][a-záéíóúñü]{2,})\b/.source, 'g');
   while ((m2 = shortPairRe.exec(text)) !== null) {
     const w1 = m2[1], w2 = m2[2];
@@ -1296,12 +1359,12 @@ function detectSpans(text) {
     if (norms.some(n => _NOT_NAMES_NORM.has(n))) continue;
     // Count how many words appear in known name lists
     const knownCount = norms.filter(n => KNOWN_FORENAMES.has(n) || KNOWN_SURNAMES.has(n)).length;
-    // Require ≥2 known words — prevents false positives from random CAPS headings
+    // Require ≥2 known words - prevents false positives from random CAPS headings
     if (knownCount < 2) continue;
     spans.push({ start: m3.index, end: m3.index + m3[0].length, type: 'NOMBRE', score: 0.80 });
   }
 
-  // Labeled reference codes — ES / EN / PT
+  // Labeled reference codes - ES / EN / PT
   // Structure A: N°/NRO./NUM. [DE/DO/DA/OF] KEYWORD : CODE  (ES · PT)
   // Structure B: KEYWORD No./Ref./#/ID : CODE              (EN)
   // Structure C: KEYWORD N°/Nº : CODE                      (PT · ES)
@@ -1326,7 +1389,7 @@ function detectSpans(text) {
   let m4;
   while ((m4 = codeCtxRe.exec(text)) !== null) {
     const code = m4[1];
-    // Reject lowercase-start (i-flag makes [A-Z0-9] match lowercase — use case-sensitive test)
+    // Reject lowercase-start (i-flag makes [A-Z0-9] match lowercase - use case-sensitive test)
     if (!/^[A-Z0-9]/.test(code)) continue;
     // Reject mixed-case without digit (e.g. "Pasajero": starts uppercase but has lowercase, no digit)
     if (!/\d/.test(code) && !/^[A-Z0-9]+$/.test(code)) continue;
@@ -1501,7 +1564,7 @@ async function extractText(file) {
     // NFC-normalize: some PDFs emit decomposed (NFD) unicode which breaks character-class matching
     const finalText = deduped.join('\n').replace(/\n{3,}/g, '\n\n').trim().normalize('NFC');
 
-    return { text: finalText, format: 'pdf', buf, warning: 'PDF rasterizado — el texto redactado es eliminado por completo del archivo.' };
+    return { text: finalText, format: 'pdf', buf, warning: 'PDF rasterizado - el texto redactado es eliminado por completo del archivo.' };
   }
 
   if (ext === 'docx') {
@@ -1509,7 +1572,7 @@ async function extractText(file) {
     const buf    = await file.arrayBuffer();
     const result = await mammoth.extractRawText({ arrayBuffer: buf });
     const canDocx = typeof PizZip !== 'undefined';
-    return { text: result.value, format: 'docx', buf, warning: canDocx ? null : 'PizZip no disponible — se descargará como texto.' };
+    return { text: result.value, format: 'docx', buf, warning: canDocx ? null : 'PizZip no disponible - se descargará como texto.' };
   }
 
   if (ext === 'xlsx' || ext === 'xls') {
@@ -1540,7 +1603,7 @@ function redactDocxXml(xmlStr, entityMap) {
   return parts.map((part, i) => {
     if (i === parts.length - 1) return part;
 
-    // Find LAST actual paragraph opening tag — must be followed by '>' or whitespace
+    // Find LAST actual paragraph opening tag - must be followed by '>' or whitespace
     // (excludes <w:pPr>, <w:pStyle>, <w:pBdr>, etc. which also start with '<w:p')
     let pStart = -1;
     const tagRe = /<w:p(?=>|\s)/g;
@@ -1608,18 +1671,18 @@ function redactDocxBuffer(buf, entities) {
 // ───────────────────────────────────────────────────────────────────────────
 
 // Secure PDF redaction: rasterise each page to canvas → draw black boxes over PII → image-only PDF
-// The output contains zero extractable text — all content is burned into JPEG pixels.
+// The output contains zero extractable text - all content is burned into JPEG pixels.
 async function buildRedactedPDF(origBuf) {
   const { PDFDocument } = PDFLib;
   pdfjsLib.GlobalWorkerOptions.workerSrc =
     'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
   const pdfjsDoc = await pdfjsLib.getDocument({ data: origBuf.slice(0) }).promise;
-  const pdfDoc   = await PDFDocument.create();  // blank PDF — no text layer
+  const pdfDoc   = await PDFDocument.create();  // blank PDF - no text layer
 
   const canvas = document.createElement('canvas');
   const ctx    = canvas.getContext('2d');
-  const SCALE  = 1.8;  // ~130 DPI — good quality, reasonable speed
+  const SCALE  = 1.8;  // ~130 DPI - good quality, reasonable speed
 
   function applyVT(vt, x, y) {
     return [vt[0] * x + vt[2] * y + vt[4], vt[1] * x + vt[3] * y + vt[5]];
@@ -1798,7 +1861,13 @@ async function buildRedactedFile(originalFile, redactedText, format, originalWb,
 // CUSTOM WORDS
 // ══════════════════════════════════════════════════════
 
-const CUSTOM_WORDS = [];
+const CW_KEY = 'velum_custom_words';
+const CUSTOM_WORDS = (() => {
+  try { return JSON.parse(localStorage.getItem(CW_KEY) || '[]'); } catch { return []; }
+})();
+function _saveCW() {
+  try { localStorage.setItem(CW_KEY, JSON.stringify(CUSTOM_WORDS)); } catch {}
+}
 
 const _ACCENT_MAP = {'a':'[aáàâäãåAÁÀÂÄÃÅ]','e':'[eéèêëEÉÈÊË]','i':'[iíìîïIÍÌÎÏ]',
   'o':'[oóòôöõøOÓÒÔÖÕØ]','u':'[uúùûüUÚÙÛÜ]','n':'[nñNÑ]','c':'[cçCÇ]'};
@@ -1833,6 +1902,7 @@ function addCW() {
   const val = inp.value.trim();
   if (!val || CUSTOM_WORDS.includes(val)) { inp.value = ''; return; }
   CUSTOM_WORDS.push(val);
+  _saveCW();
   renderCWTags();
   inp.value = '';
   inp.focus();
@@ -1840,6 +1910,7 @@ function addCW() {
 
 function removeCW(i) {
   CUSTOM_WORDS.splice(i, 1);
+  _saveCW();
   renderCWTags();
 }
 
@@ -1854,7 +1925,7 @@ const S = {
   results: { R: null, RR: null },
 };
 
-// Etiquetas de tipo por idioma — solo los genéricos se traducen;
+// Etiquetas de tipo por idioma - solo los genéricos se traducen;
 // códigos de documento (RUT, CUIT, DNI…) son iguales en todos los idiomas
 const TYPE_LABELS = {
   es: { NOMBRE:'NOMBRE', TELEFONO:'TELEFONO', TARJETA:'TARJETA', CUENTA:'CUENTA',
@@ -1928,6 +1999,11 @@ async function doRedact() {
 
     renderManifest(entities);
     renderViewer('R', redactedText);
+    const lbl = el('viewerLabelR');
+    if (!file) lbl.textContent = T('lbl_text_redacted');
+    lbl.classList.add('active');
+
+    el('clearAllBtn').style.display = '';
     el('copyBtnR').style.display = '';
     el('dlBtnR').style.display = dlBlob ? '' : 'none';
 
@@ -1993,9 +2069,10 @@ function loadSession() {
   const mapping = SESSION.mapping(sid);
   const entries = Object.entries(mapping);
   if (!entries.length) { el('sessEmpty').classList.remove('hidden'); el('sessContent').classList.add('hidden'); return; }
-  el('sessBody').innerHTML = entries.map(([tok,val]) =>
-    `<tr><td>${esc(tok)}</td><td>${esc(val)}</td></tr>`
-  ).join('');
+  el('sessBody').innerHTML = entries.map(([tok,val]) => {
+    const display = esc(val.replace(/[\r\n]+/g, ' ').trim());
+    return `<tr><td title="${esc(tok)}">${esc(tok)}</td><td title="${esc(val)}">${display}</td></tr>`;
+  }).join('');
   el('sessEmpty').classList.add('hidden');
   el('sessContent').classList.remove('hidden');
 }
@@ -2054,9 +2131,24 @@ function renderViewer(key, text) {
 // COPY / DOWNLOAD
 // ══════════════════════════════════════════════════════
 
+function clipboardWrite(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    return navigator.clipboard.writeText(text).catch(() => clipboardWriteFallback(text));
+  }
+  return Promise.resolve(clipboardWriteFallback(text));
+}
+function clipboardWriteFallback(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  Object.assign(ta.style, { position:'fixed', top:'0', left:'0', opacity:'0', pointerEvents:'none' });
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  try { document.execCommand('copy'); } catch {}
+  document.body.removeChild(ta);
+}
 function copyResult(key) {
   const r = S.results[key]; if (!r) return;
-  navigator.clipboard.writeText(r.text).then(() => {
+  clipboardWrite(r.text).then(() => {
     const btn = el(key === 'R' ? 'copyBtnR' : 'copyBtnRR');
     if (btn) { const o = btn.textContent; btn.textContent = '✓'; setTimeout(() => btn.textContent = o, 1500); }
   });
@@ -2147,6 +2239,39 @@ function clearFile(mode) {
   }
 }
 
+function clearAll() {
+  el('textR').value  = '';
+  el('textRR').value = '';
+  if (el('sidInput')) el('sidInput').value = '';
+  if (el('cwInput'))  el('cwInput').value  = '';
+  clearFile('redact');
+  clearFile('restore');
+
+  CUSTOM_WORDS.splice(0);
+  _saveCW();
+  if (el('cwTags')) el('cwTags').innerHTML = '';
+
+  S.results = { R: null, RR: null };
+
+  const rBodyR = el('rBodyR');
+  if (rBodyR) rBodyR.innerHTML = `<div class="result-empty" id="emptyR"><span class="empty-glyph">⬡</span><span id="lbl-empty">El resultado aparecerá aquí</span></div>`;
+  el('clearAllBtn')?.style && (el('clearAllBtn').style.display = 'none');
+  el('copyBtnR')?.style && (el('copyBtnR').style.display = 'none');
+  el('dlBtnR')?.style   && (el('dlBtnR').style.display   = 'none');
+  const lbl = el('viewerLabelR');
+  if (lbl) { lbl.textContent = T('lbl_result_idle'); lbl.classList.remove('active'); }
+  el('manifestR')?.classList.add('hidden');
+  el('bannerR')?.classList.add('hidden');
+  el('viewerR')?.classList.remove('scanning');
+
+  const rBodyRR = el('rBodyRR');
+  if (rBodyRR) rBodyRR.innerHTML = `<div class="result-empty"><span class="empty-glyph">⬡</span><span>El resultado restaurado aparecerá aquí</span></div>`;
+  el('copyBtnRR')?.style && (el('copyBtnRR').style.display = 'none');
+  el('dlBtnRR')?.style   && (el('dlBtnRR').style.display   = 'none');
+  el('bannerRR')?.classList.add('hidden');
+  el('viewerRR')?.classList.remove('scanning');
+}
+
 
 // ══════════════════════════════════════════════════════
 // UI UTILS
@@ -2196,9 +2321,13 @@ function flashBanner(id, type, msg) {
 }
 
 async function pasteSid() {
-  try { el('sidInput').value = (await navigator.clipboard.readText()).trim(); } catch {}
+  if (navigator.clipboard && navigator.clipboard.readText) {
+    try { el('sidInput').value = (await navigator.clipboard.readText()).trim(); return; } catch {}
+  }
+  const v = prompt('Pegar ID de sesión:');
+  if (v) el('sidInput').value = v.trim();
 }
-function copySid() { if (SESSION.current) navigator.clipboard.writeText(SESSION.current); }
+function copySid() { if (SESSION.current) clipboardWrite(SESSION.current); }
 function fmtSid(id) { return id ? id.slice(0,8) + '...' + id.slice(-4) : '-'; }
 function el(id)  { return document.getElementById(id); }
 function esc(s)  { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -2211,6 +2340,7 @@ function esc(s)  { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').r
 window.addEventListener('DOMContentLoaded', () => {
   SESSION.load();
   applyLang();
+  renderCWTags();
   const theme = localStorage.getItem('velum_theme');
   if (theme) document.documentElement.setAttribute('data-theme', theme);
   // Restore previous session if exists
